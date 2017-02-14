@@ -7,6 +7,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.awt.*;
+
 import static org.junit.Assert.*;
 
 @RunWith(HierarchicalContextRunner.class)
@@ -433,6 +435,14 @@ public class NodeTest {
 
         @Test
         public void testGlueBottomInsertSingleInPlaneRead() {
+            /*O - m - O
+              |   |   |
+              |   w   |
+              |   |   |
+              e - y - h
+              |   |   |
+              O - t - O
+             */
             testNode = new Node(7, 42);
             testNode.place("me");
             testNode.getNode(Direction.DOWN).place("you");
@@ -449,8 +459,7 @@ public class NodeTest {
             assertEquals("you", testNode.getNode(Direction.DOWN).getNode(Direction.DOWN).readObject());
             assertEquals("him", testNode.getNode(Direction.RIGHT).getNode(Direction.DOWN).readObject());
             assertEquals("her", testNode.getNode(Direction.LEFT).getNode(Direction.DOWN).readObject());
-            assertEquals("you", testNode.getNode(Direction.RIGHT).getNode(Direction.DOWN)
-                    .getNode(Direction.DOWN).getNode(Direction.LEFT).readObject());
+            assertEquals("you", testNode.getNode(Direction.RIGHT).getNode(Direction.DOWN).getNode(Direction.LEFT).readObject());
         }
 
         @Test
@@ -547,5 +556,30 @@ public class NodeTest {
         public void testHeightPlane() {
             assertEquals(23, new Node(231, 23).height());
         }
+    }
+
+    @Test
+    public void testGetNodeAtBase() {
+        assertEquals(testNode, testNode.getNodeAt(new Point(0, 0)));
+        assertEquals(testNode.getNode(Direction.UP), testNode.getNodeAt(new Point(0, -1)));
+        assertEquals(testNode.getNode(Direction.DOWN), testNode.getNodeAt(new Point(0, 1)));
+        assertEquals(testNode.getNode(Direction.LEFT), testNode.getNodeAt(new Point(-1, 0)));
+        assertEquals(testNode.getNode(Direction.RIGHT), testNode.getNodeAt(new Point(1, 0)));
+    }
+
+    @Test
+    public void testGetNodeAtConflict() {
+        assertEquals(testNode.getNode(Direction.UP).getNode(Direction.LEFT),
+                testNode.getNodeAt(new Point(-1, -1)));
+        assertEquals(testNode.getNode(Direction.LEFT).getNode(Direction.DOWN),
+                testNode.getNodeAt(new Point(-1, 1)));
+        assertEquals(testNode.getNode(Direction.DOWN).getNode(Direction.RIGHT),
+                testNode.getNodeAt(new Point(1, -1)));
+        assertEquals(testNode.getNode(Direction.RIGHT).getNode(Direction.UP),
+                testNode.getNodeAt(new Point(1, 1)));
+    }
+
+    @Test
+    public void testGetNodeAtFar() {
     }
 }

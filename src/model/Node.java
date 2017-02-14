@@ -83,6 +83,7 @@ public class Node {
     // bottom graph connects to this graph and its old bottom graph
     public void glueBottom(Node bottom) {
         Node topTraveller = this;
+        Node lostChild = this.getNode(Direction.DOWN);
         Node bottomTraveller = bottom;
 
         do {
@@ -92,23 +93,20 @@ public class Node {
             bottomTraveller = bottomTraveller.getNode(Direction.RIGHT);
         } while (topTraveller != this && bottomTraveller != bottom);
 
-        Node originalTopTraveller = topTraveller;
+        bottomTraveller = bottom;
         Node originalBottomTraveller = bottomTraveller;
-
-        while (topTraveller.getNode(Direction.UP) != originalTopTraveller) {
-            topTraveller = topTraveller.getNode(Direction.UP);
-        }
+        Node originalLostChild = lostChild;
 
         while (bottomTraveller.getNode(Direction.DOWN) != originalBottomTraveller) {
             bottomTraveller = bottomTraveller.getNode(Direction.DOWN);
         }
 
         do {
-            topTraveller.connect(bottomTraveller, Direction.UP);
+            lostChild.connect(bottomTraveller, Direction.UP);
 
-            topTraveller = topTraveller.getNode(Direction.RIGHT);
+            lostChild = lostChild.getNode(Direction.RIGHT);
             bottomTraveller = bottomTraveller.getNode(Direction.RIGHT);
-        } while (topTraveller != originalTopTraveller && bottomTraveller != originalBottomTraveller);
+        } while (lostChild != originalLostChild && bottomTraveller != originalBottomTraveller);
     }
 
     // EFFECTS: produce the number of nodes in the graph
@@ -164,16 +162,18 @@ public class Node {
         return visited.size();
     }
 
-    // REQUIRES: given node is connected to this node
-    // EFFECTS: produce the shortest radius vector pointing from this node
-    // to the given node
-    public Point distance() {
+    // EFFECTS: produce the node at the given location relative the this node
+    // with path that intersects with the given vector the most
+    // If more than one node is possible, go counterclockwise
+    public Node getNodeAt(Point point) {
         return null; //stub
     }
 
-    // EFFECTS: produce the node at the given location relative the this node
-    // with path that intersects with the given vector the most
-    public Node getNodeAt(Point point) {
-        return null; //stub
+
+    // REQUIRES: height, width > 0;
+    // EFFECTS: produce a rectangular projection of this graph on a regular Euclidean plane,
+    // as seen from this node
+    public Map<Point, Node> getMap(int height, int width) {
+        return null;
     }
 }
