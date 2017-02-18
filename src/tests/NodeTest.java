@@ -624,9 +624,26 @@ public class NodeTest {
 
         @Test
         public void testGetNodeAtFar() {
-            // TODO: finish
-        }
+            assertEquals(testMultiNode.getNodeAt(
+                    new Path(Direction.RIGHT, Direction.UP, Direction.RIGHT, Direction.UP,
+                            Direction.RIGHT, Direction.UP, Direction.RIGHT, Direction.UP)),
+                    testMultiNode.getNodeAt(new Point(4, 4)));
 
-        // TODO: finish
+            assertEquals(testMultiNode.getNodeAt(
+                    new Path(Direction.RIGHT, Direction.RIGHT, Direction.RIGHT, Direction.UP,
+                            Direction.RIGHT, Direction.RIGHT, Direction.RIGHT)),
+                    testMultiNode.getNodeAt(new Point(4, 1)));
+
+
+            assertEquals(testMultiNode.getNodeAt(
+                    new Path(Direction.UP, Direction.RIGHT, Direction.UP, Direction.UP)),
+                    testMultiNode.getNodeAt(new Point(1, 3)));
+
+
+            assertEquals(testMultiNode.getNodeAt(
+                    new Path(Direction.UP, Direction.RIGHT, Direction.UP, Direction.UP,
+                            Direction.UP, Direction.RIGHT, Direction.UP)),
+                    testMultiNode.getNodeAt(new Point(2, 5)));
+        }
     }
 }

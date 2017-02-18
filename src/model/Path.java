@@ -1,5 +1,6 @@
 package model;
 
+import java.awt.Point;
 import java.util.Collections;
 import java.util.LinkedList;
 
@@ -15,5 +16,11 @@ public class Path extends LinkedList<Direction> {
     // First argument is the first turn, last argument is the last turn
     public Path(Direction... directions) {
         Collections.addAll(this, directions);
+    }
+
+    // EFFECTS: constructs a path from given vector
+    // if in doubt, go counterclockwise
+    public Path(Point point) {
+
     }
 }
