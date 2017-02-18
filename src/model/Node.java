@@ -4,7 +4,7 @@ import java.awt.*;
 import java.util.*;
 
 /**
- * A node in a plane graph
+ * A node in a planar graph
  */
 public class Node {
     private Map<Direction, Node> children = new HashMap<>();
@@ -162,13 +162,23 @@ public class Node {
         return visited.size();
     }
 
+    // EFFECTS: produce the node at the given path relative to this node
+    public Node getNodeAt(Path path) {
+        Node traveller = this;
+
+        for (Direction direction : path) {
+            traveller = traveller.getNode(direction);
+        }
+
+        return traveller;
+    }
+
     // EFFECTS: produce the node at the given location relative the this node
     // with path that intersects with the given vector the most
     // If more than one node is possible, go counterclockwise
     public Node getNodeAt(Point point) {
         return null; //stub
     }
-
 
     // REQUIRES: height, width > 0;
     // EFFECTS: produce a rectangular projection of this graph on a regular Euclidean plane,

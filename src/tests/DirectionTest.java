@@ -6,6 +6,7 @@ import org.junit.Test;
 import java.awt.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 public class DirectionTest {
     @Test
@@ -24,5 +25,23 @@ public class DirectionTest {
         assertEquals(new Point(30, 40 - 1), Direction.UP.shiftPoint(p));
         assertEquals(new Point(30 + 1, 40), Direction.RIGHT.shiftPoint(p));
         assertEquals(new Point(30 - 1, 40), Direction.LEFT.shiftPoint(p));
+    }
+
+    @Test
+    public void testNextNoIdentity() {
+        for (Direction direction : Direction.values()) {
+            assertNotEquals(direction, direction.next());
+        }
+    }
+
+    @Test
+    public void testNextRepetition() {
+        for (Direction direction : Direction.values()) {
+            Direction initialDirection = direction;
+            for (int i = 0; i < Direction.values().length; i++) {
+                direction = direction.next();
+            }
+            assertEquals(initialDirection, direction);
+        }
     }
 }

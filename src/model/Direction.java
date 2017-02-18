@@ -19,6 +19,22 @@ public enum Direction {
         }
     }
 
+    // EFFECTS: produce an arbitrary next direction
+    // INVARIANT: calling next() this.size() times will make the direction repeat
+    // INVARIANT: the same direction does not come after itself
+    public Direction next() {
+        switch (this) {
+            case UP:
+                return DOWN;
+            case DOWN:
+                return LEFT;
+            case LEFT:
+                return RIGHT;
+            default:
+                return UP;
+        }
+    }
+
     // EFFECTS: returns a new point that is positioned in this
     // direction relative to this point
     public Point shiftPoint(Point p) {

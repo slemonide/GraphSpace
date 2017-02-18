@@ -3,6 +3,7 @@ package tests;
 import de.bechte.junit.runners.context.HierarchicalContextRunner;
 import model.Direction;
 import model.Node;
+import model.Path;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,11 +15,14 @@ import static org.junit.Assert.*;
 @RunWith(HierarchicalContextRunner.class)
 public class NodeTest {
     private int MAXSIZE = 200;
+    private int PATHLENGTH = 50;
     private Node testNode;
+    private Node testMultiNode;
 
     @Before
     public void runBefore() {
         testNode = new Node();
+        testMultiNode = new Node(MAXSIZE, MAXSIZE);
     }
 
     public class TestConstructor {
@@ -558,28 +562,71 @@ public class NodeTest {
         }
     }
 
-    @Test
-    public void testGetNodeAtBase() {
-        assertEquals(testNode, testNode.getNodeAt(new Point(0, 0)));
-        assertEquals(testNode.getNode(Direction.UP), testNode.getNodeAt(new Point(0, -1)));
-        assertEquals(testNode.getNode(Direction.DOWN), testNode.getNodeAt(new Point(0, 1)));
-        assertEquals(testNode.getNode(Direction.LEFT), testNode.getNodeAt(new Point(-1, 0)));
-        assertEquals(testNode.getNode(Direction.RIGHT), testNode.getNodeAt(new Point(1, 0)));
+    public class testGetNodeAtPath {
+        @Test
+        public void testGetNodeAtBase() {
+            assertEquals(testMultiNode,testMultiNode.getNodeAt(new Path()));
+        }
+
+        @Test
+        public void testGetNodeAtNeighbours() {
+            assertEquals(testMultiNode,testMultiNode.getNodeAt(new Path()));
+            assertEquals(testMultiNode.getNode(Direction.UP), testMultiNode.getNodeAt(new Path(Direction.UP)));
+            assertEquals(testMultiNode.getNode(Direction.DOWN), testMultiNode.getNodeAt(new Path(Direction.DOWN)));
+            assertEquals(testMultiNode.getNode(Direction.LEFT), testMultiNode.getNodeAt(new Path(Direction.LEFT)));
+            assertEquals(testMultiNode.getNode(Direction.RIGHT), testMultiNode.getNodeAt(new Path(Direction.RIGHT)));
+        }
+
+        @Test
+        public void testGetNodeAtFar() {
+            assertEquals(testMultiNode.getNode(Direction.UP).getNode(Direction.UP).getNode(Direction.LEFT),
+                    testMultiNode.getNodeAt(new Path(Direction.UP, Direction.UP, Direction.LEFT)));
+            assertEquals(testMultiNode.getNode(Direction.DOWN).getNode(Direction.UP).getNode(Direction.LEFT),
+                    testMultiNode.getNodeAt(new Path(Direction.DOWN, Direction.UP, Direction.LEFT)));
+            assertEquals(testMultiNode.getNode(Direction.LEFT).getNode(Direction.UP).getNode(Direction.LEFT),
+                    testMultiNode.getNodeAt(new Path(Direction.LEFT, Direction.UP, Direction.LEFT)));
+        }
+
+        @Test
+        public void testGetNodeAtFarExhaustive() {
+            for (Direction dir1 : Direction.values()) {
+                for (Direction dir2 : Direction.values()) {
+                    for (Direction dir3 : Direction.values()) {
+                        assertEquals(testMultiNode.getNode(dir1).getNode(dir2).getNode(dir3),
+                                testMultiNode.getNodeAt(new Path(dir1, dir2, dir3)));
+                    }
+                }
+            }
+        }
     }
 
-    @Test
-    public void testGetNodeAtConflict() {
-        assertEquals(testNode.getNode(Direction.UP).getNode(Direction.LEFT),
-                testNode.getNodeAt(new Point(-1, -1)));
-        assertEquals(testNode.getNode(Direction.LEFT).getNode(Direction.DOWN),
-                testNode.getNodeAt(new Point(-1, 1)));
-        assertEquals(testNode.getNode(Direction.DOWN).getNode(Direction.RIGHT),
-                testNode.getNodeAt(new Point(1, -1)));
-        assertEquals(testNode.getNode(Direction.RIGHT).getNode(Direction.UP),
-                testNode.getNodeAt(new Point(1, 1)));
-    }
+    public class TestGetNodeAtPoint {
+        @Test
+        public void testGetNodeAtBase() {
+            assertEquals(testMultiNode, testMultiNode.getNodeAt(new Point(0, 0)));
+            assertEquals(testMultiNode.getNode(Direction.UP), testMultiNode.getNodeAt(new Point(0, -1)));
+            assertEquals(testMultiNode.getNode(Direction.DOWN), testMultiNode.getNodeAt(new Point(0, 1)));
+            assertEquals(testMultiNode.getNode(Direction.LEFT), testMultiNode.getNodeAt(new Point(-1, 0)));
+            assertEquals(testMultiNode.getNode(Direction.RIGHT), testMultiNode.getNodeAt(new Point(1, 0)));
+        }
 
-    @Test
-    public void testGetNodeAtFar() {
+        @Test
+        public void testGetNodeAtConflict() {
+            assertEquals(testMultiNode.getNode(Direction.UP).getNode(Direction.LEFT),
+                    testMultiNode.getNodeAt(new Point(-1, -1)));
+            assertEquals(testMultiNode.getNode(Direction.LEFT).getNode(Direction.DOWN),
+                    testMultiNode.getNodeAt(new Point(-1, 1)));
+            assertEquals(testMultiNode.getNode(Direction.DOWN).getNode(Direction.RIGHT),
+                    testMultiNode.getNodeAt(new Point(1, -1)));
+            assertEquals(testMultiNode.getNode(Direction.RIGHT).getNode(Direction.UP),
+                    testMultiNode.getNodeAt(new Point(1, 1)));
+        }
+
+        @Test
+        public void testGetNodeAtFar() {
+            // TODO: finish
+        }
+
+        // TODO: finish
     }
 }
