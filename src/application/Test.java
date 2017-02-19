@@ -1,6 +1,6 @@
 package application;
 
-import model.Node;
+import model.space.Node;
 
 import java.awt.*;
 import java.util.*;

@@ -1,4 +1,4 @@
-package model;
+package model.space;
 
 import java.util.HashMap;
 import java.util.LinkedList;

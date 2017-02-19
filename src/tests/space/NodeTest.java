@@ -1,10 +1,10 @@
-package tests;
+package tests.space;
 
 import de.bechte.junit.runners.context.HierarchicalContextRunner;
-import model.Direction;
-import model.Node;
-import model.Path;
-import model.Point;
+import model.space.Direction;
+import model.space.Node;
+import model.space.Path;
+import model.space.Point;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,7 +1,7 @@
 package application;
 
-import model.Direction;
-import model.Node;
+import model.space.Direction;
+import model.space.Node;
 
 import java.util.Scanner;
 

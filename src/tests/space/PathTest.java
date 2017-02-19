@@ -1,8 +1,8 @@
-package tests;
+package tests.space;
 
-import model.Direction;
-import model.Path;
-import model.Point;
+import model.space.Direction;
+import model.space.Path;
+import model.space.Point;
 import org.junit.Before;
 import org.junit.Test;
 

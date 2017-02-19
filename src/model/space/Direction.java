@@ -1,4 +1,4 @@
-package model;
+package model.space;
 
 public enum Direction {
     UP, DOWN, LEFT, RIGHT;

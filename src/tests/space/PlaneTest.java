@@ -1,9 +1,9 @@
-package tests;
+package tests.space;
 
-import model.Direction;
-import model.Node;
-import model.Plane;
-import model.Point;
+import model.space.Direction;
+import model.space.Node;
+import model.space.Plane;
+import model.space.Point;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -8,8 +8,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import model.Node;
-import model.Point;
+import model.space.Node;
+import model.space.Point;
 
 public class GridGUI extends Application {
     private Node<String> world = new Node<>(100, 100);

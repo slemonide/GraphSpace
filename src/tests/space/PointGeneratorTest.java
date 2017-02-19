@@ -1,7 +1,7 @@
-package tests;
+package tests.space;
 
-import model.Point;
-import model.PointGenerator;
+import model.space.Point;
+import model.space.PointGenerator;
 import org.junit.Test;
 
 import java.util.Queue;

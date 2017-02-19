@@ -1,7 +1,7 @@
-package tests;
+package tests.space;
 
-import model.Direction;
-import model.Point;
+import model.space.Direction;
+import model.space.Point;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
