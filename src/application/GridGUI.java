@@ -12,8 +12,6 @@ import model.Node;
 import model.Point;
 
 public class GridGUI extends Application {
-    private int HEIGHT = 10;
-    private int WIDTH = 10;
     private Node<String> world = new Node<>(100, 100);
 
     public GridGUI() {
@@ -35,9 +33,11 @@ public class GridGUI extends Application {
         GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
 
+        int HEIGHT = 10;
         for (int y = 0; y < HEIGHT; y++) {
+            int WIDTH = 10;
             for (int x = 0; x < WIDTH; x++) {
-                final String text = world.getNodeAt(new Point(x - WIDTH/2, y - HEIGHT/2)).readObject();
+                final String text = world.getNodeAt(new Point(x - WIDTH /2, y - HEIGHT /2)).readObject();
 
                 Button newButton = new Button(text);
                 newButton.setOnAction(new EventHandler<ActionEvent>() {

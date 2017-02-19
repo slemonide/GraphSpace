@@ -5,13 +5,13 @@ import model.Node;
 
 import java.util.Scanner;
 
-public class Main {
+class Main {
     private static int height = 10;
     private static int width = 10;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        Node node = new Node(width, height);
+        Node<String> node = new Node<>(width, height);
 
         while (true) {
             String input = scanner.nextLine();

@@ -11,7 +11,6 @@ public class NiceGUI extends Application {
     private int SIDE_SIZE = 16;
     private int HEIGHT = SIDE_SIZE * 100;
     private int WIDTH = SIDE_SIZE * 100;
-    private int SPACING = 1;
 
     public static void main(String[] args) {
         launch(args);
@@ -24,6 +23,7 @@ public class NiceGUI extends Application {
         primaryStage.setScene(scene);
 
         Group squares = new Group();
+        int SPACING = 1;
         for (int y = 0; y < HEIGHT; y += SIDE_SIZE + SPACING) {
             for (int x = 0; x < WIDTH; x += SIDE_SIZE + SPACING) {
                 Rectangle square = new Rectangle(SIDE_SIZE, SIDE_SIZE, Color.web("brown"));

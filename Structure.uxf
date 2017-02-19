@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.2">
+  <zoom_level>10</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>30</x>
+      <y>30</y>
+      <w>360</w>
+      <h>310</h>
+    </coordinates>
+    <panel_attributes>model::Node
+--
+-children = new HashMap(): Map&lt;Direction, Node&lt;E&gt;&gt;
+-contents: E
+--
++Node(): ctor
++Node(int width, int height): ctor
++Node(int width): ctor
++getNode(Direction dir): Node&lt;E&gt;
++place(E obj): void
++readObject(): E
++connect(Node&lt;E&gt; node, Direction dir): void
++glueBottom(Node&lt;E&gt; bottom): void
++size(): int
++width(): int
++height(): int
++getNodeAt(Path path): Node&lt;E&gt;
++getNodeAt(Point point): Node&lt;E&gt;
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>410</x>
+      <y>30</y>
+      <w>230</w>
+      <h>110</h>
+    </coordinates>
+    <panel_attributes> model::Path
+--
+--
++Path(): ctor
++Path(Direction... directions): ctor
++Path(Point point): ctor
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>660</x>
+      <y>30</y>
+      <w>350</w>
+      <h>70</h>
+    </coordinates>
+    <panel_attributes>model::Plane
+--
+--
++Plane(int height, int width, Node observerNode): ctor
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1030</x>
+      <y>30</y>
+      <w>290</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>model::Point
+--
+--
++Point(int x, int y): ctor
++isOrigin(): boolean
++half(): Point
++getDirectionTo(Point otherPoint): Direction
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>410</x>
+      <y>150</y>
+      <w>440</w>
+      <h>190</h>
+    </coordinates>
+    <panel_attributes>model::PointGenerator
+--
+--
+-PointGenerator(): ctor
++generateFromPoint(Point endPoint): Queue&lt;Point&gt;
+-theEndIsToTheLeft(Point current, Point endPoint): boolean
+-endIsExactlyBelow(Point current, Point endPoint): boolean
+-endIsExactlyAbove(Point current, Point endPoint): boolean
+-theEndIsToTheRight(Point current, Point endPoint): boolean
+-lineGoesBelowCurrentNode(Point current, Point endPoint): boolean
+-lineGoesAboveCurrentNode(Point current, Point endPoint): boolean
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
