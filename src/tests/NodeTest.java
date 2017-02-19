@@ -14,14 +14,13 @@ import static org.junit.Assert.*;
 @RunWith(HierarchicalContextRunner.class)
 public class NodeTest {
     private int MAXSIZE = 200;
-    private int PATHLENGTH = 50;
-    private Node testNode;
-    private Node testMultiNode;
+    private Node<Object> testNode;
+    private Node<Object> testMultiNode;
 
     @Before
     public void runBefore() {
-        testNode = new Node();
-        testMultiNode = new Node(MAXSIZE, MAXSIZE);
+        testNode = new Node<>();
+        testMultiNode = new Node<>(MAXSIZE, MAXSIZE);
     }
 
     public class TestConstructor {
@@ -36,7 +35,7 @@ public class NodeTest {
 
         @Test
         public void testConstructorStripeBase() {
-            testNode = new Node(1);
+            testNode = new Node<>(1);
             assertNull(testNode.readObject());
             assertEquals(testNode, testNode.getNode(Direction.UP));
             assertEquals(testNode, testNode.getNode(Direction.DOWN));
@@ -46,7 +45,7 @@ public class NodeTest {
 
         @Test
         public void testStripeTwo() {
-            testNode = new Node(2);
+            testNode = new Node<>(2);
             assertEquals(testNode, testNode.getNode(Direction.UP));
             assertEquals(testNode, testNode.getNode(Direction.DOWN));
             assertEquals(testNode, testNode.getNode(Direction.RIGHT).getNode(Direction.LEFT));
@@ -57,7 +56,7 @@ public class NodeTest {
 
         @Test
         public void testConstructorStripeGoFarRight() {
-            testNode = new Node(MAXSIZE);
+            testNode = new Node<>(MAXSIZE);
             Node traveller;
             traveller = testNode.getNode(Direction.RIGHT);
 
@@ -75,7 +74,7 @@ public class NodeTest {
 
         @Test
         public void testConstructorStripeGoFarLeft() {
-            testNode = new Node(MAXSIZE);
+            testNode = new Node<>(MAXSIZE);
             Node traveller;
             traveller = testNode.getNode(Direction.LEFT);
 
@@ -93,7 +92,7 @@ public class NodeTest {
 
         @Test
         public void testConstructorPlaneBase() {
-            testNode = new Node(1, 1);
+            testNode = new Node<>(1, 1);
             assertNull(testNode.readObject());
             assertEquals(testNode, testNode.getNode(Direction.UP));
             assertEquals(testNode, testNode.getNode(Direction.DOWN));
@@ -103,7 +102,7 @@ public class NodeTest {
 
         @Test
         public void testConstructorPlaneTwoByOne() {
-            testNode = new Node(2, 1);
+            testNode = new Node<>(2, 1);
             assertNull(testNode.readObject());
             assertNull(testNode.getNode(Direction.RIGHT).readObject());
             assertNotEquals(testNode, testNode.getNode(Direction.LEFT));
@@ -119,7 +118,7 @@ public class NodeTest {
 
         @Test
         public void testConstructorPlaneOneByTwo() {
-            testNode = new Node(1, 2);
+            testNode = new Node<>(1, 2);
             assertNull(testNode.readObject());
             assertNull(testNode.getNode(Direction.DOWN).readObject());
             assertNotEquals(testNode, testNode.getNode(Direction.DOWN));
@@ -135,7 +134,7 @@ public class NodeTest {
 
         @Test
         public void testConstructorPlaneTwoByTwo() {
-            testNode = new Node(2, 2);
+            testNode = new Node<>(2, 2);
             assertNull(testNode.readObject());
             assertEquals(testNode, testNode.getNode(Direction.UP).getNode(Direction.UP));
             assertEquals(testNode, testNode.getNode(Direction.DOWN).getNode(Direction.DOWN));
@@ -150,7 +149,7 @@ public class NodeTest {
         public void testConstructorPlaneBigConnection() {
             int width = MAXSIZE;
             int height = MAXSIZE;
-            testNode = new Node(width, height);
+            testNode = new Node<>(width, height);
 
             Node currentNode = testNode;
             for (int y = 0; y < height; y++) {
@@ -167,7 +166,7 @@ public class NodeTest {
         public void testConstructorPlaneBigEmptiness() {
             int width = MAXSIZE;
             int height = MAXSIZE;
-            testNode = new Node(width, height);
+            testNode = new Node<>(width, height);
 
             Node currentNode = testNode;
             for (int y = 1; y < height; y++) {
@@ -236,7 +235,7 @@ public class NodeTest {
 
         @Test
         public void testPlaceReadTwoByTwo() {
-            testNode = new Node(2, 2);
+            testNode = new Node<>(2, 2);
 
             testNode.place(1);
             testNode = testNode.getNode(Direction.RIGHT);
@@ -269,7 +268,7 @@ public class NodeTest {
     public class TestRead {
         @Test
         public void testRead() {
-            testNode = new Node(3, 3);
+            testNode = new Node<>(3, 3);
 
             testNode.place("a");
             testNode.getNode(Direction.RIGHT).place("b");
@@ -298,7 +297,7 @@ public class NodeTest {
 
         @Test
         public void testReadVertical() {
-            testNode = new Node(1, 5);
+            testNode = new Node<>(1, 5);
             testNode.place(1);
             testNode.getNode(Direction.DOWN).place(2);
             testNode.getNode(Direction.DOWN).getNode(Direction.DOWN).place(3);
@@ -314,7 +313,7 @@ public class NodeTest {
 
         @Test
         public void testReadHorizontal() {
-            testNode = new Node(5, 1);
+            testNode = new Node<>(5, 1);
             testNode.place(1);
             testNode.getNode(Direction.RIGHT).place(2);
             testNode.getNode(Direction.RIGHT).getNode(Direction.RIGHT).place(3);
@@ -340,8 +339,8 @@ public class NodeTest {
 
         @Test
         public void testConnectOne() {
-            Node testNodeA = new Node();
-            Node testNodeB = new Node();
+            Node<Object> testNodeA = new Node<>();
+            Node<Object> testNodeB = new Node<>();
 
             for (Direction dir : Direction.values()) {
                 testNodeA.connect(testNodeB, dir);
@@ -354,8 +353,8 @@ public class NodeTest {
     public class TestGlueBottom {
         @Test
         public void testGlueBottom() {
-            testNode = new Node(MAXSIZE);
-            testNode.glueBottom(new Node(MAXSIZE));
+            testNode = new Node<>(MAXSIZE);
+            testNode.glueBottom(new Node<>(MAXSIZE));
             Node traveller;
             traveller = testNode.getNode(Direction.LEFT);
 
@@ -377,9 +376,9 @@ public class NodeTest {
 
         @Test
         public void testGlueBottomThreeLayers() {
-            testNode = new Node(MAXSIZE);
-            testNode.glueBottom(new Node(MAXSIZE));
-            testNode.glueBottom(new Node(MAXSIZE));
+            testNode = new Node<>(MAXSIZE);
+            testNode.glueBottom(new Node<>(MAXSIZE));
+            testNode.glueBottom(new Node<>(MAXSIZE));
             Node traveller;
             traveller = testNode.getNode(Direction.LEFT);
 
@@ -402,9 +401,9 @@ public class NodeTest {
 
         @Test
         public void testGlueBottomRead3() {
-            testNode = new Node();
-            testNode.glueBottom(new Node());
-            testNode.glueBottom(new Node());
+            testNode = new Node<>();
+            testNode.glueBottom(new Node<>());
+            testNode.glueBottom(new Node<>());
 
             testNode.place(0);
             testNode.getNode(Direction.DOWN).place(1);
@@ -417,11 +416,11 @@ public class NodeTest {
 
         @Test
         public void testGlueBottomRead5() {
-            testNode = new Node();
-            testNode.glueBottom(new Node());
-            testNode.glueBottom(new Node());
-            testNode.glueBottom(new Node());
-            testNode.glueBottom(new Node());
+            testNode = new Node<>();
+            testNode.glueBottom(new Node<>());
+            testNode.glueBottom(new Node<>());
+            testNode.glueBottom(new Node<>());
+            testNode.glueBottom(new Node<>());
 
             testNode.place(0);
             testNode.getNode(Direction.DOWN).place(1);
@@ -446,14 +445,14 @@ public class NodeTest {
               |   |   |
               O - t - O
              */
-            testNode = new Node(7, 42);
+            testNode = new Node<>(7, 42);
             testNode.place("me");
             testNode.getNode(Direction.DOWN).place("you");
             testNode.getNode(Direction.DOWN).getNode(Direction.DOWN).place("them");
             testNode.getNode(Direction.DOWN).getNode(Direction.RIGHT).place("him");
             testNode.getNode(Direction.DOWN).getNode(Direction.LEFT).place("her");
 
-            testNode.glueBottom(new Node());
+            testNode.glueBottom(new Node<>());
             testNode.getNode(Direction.DOWN).place("what?");
             assertEquals("me", testNode.readObject());
             assertEquals("what?", testNode.getNode(Direction.DOWN).readObject());
@@ -467,11 +466,11 @@ public class NodeTest {
 
         @Test
         public void testGlueBottomInsertStripeInPlaneRead() {
-            testNode = new Node(100, 200);
+            testNode = new Node<>(100, 200);
             testNode.place("me");
             testNode.getNode(Direction.DOWN).place("you");
 
-            testNode.glueBottom(new Node(20));
+            testNode.glueBottom(new Node<>(20));
             assertEquals("me", testNode.readObject());
             assertEquals("you", testNode.getNode(Direction.DOWN).getNode(Direction.DOWN).readObject());
         }
@@ -485,43 +484,43 @@ public class NodeTest {
 
         @Test
         public void testSizeTwoCase() {
-            testNode.connect(new Node(), Direction.RIGHT);
+            testNode.connect(new Node<>(), Direction.RIGHT);
             assertEquals(2, testNode.size());
         }
 
         @Test
         public void testSizeStripe() {
-            testNode = new Node(100);
+            testNode = new Node<>(100);
             assertEquals(100, testNode.size());
         }
 
         @Test
         public void testSizePlane() {
-            testNode = new Node(100, 342);
+            testNode = new Node<>(100, 342);
             assertEquals(100 * 342, testNode.size());
         }
 
         @Test
         public void testSizeDoubleStripeEqual() {
-            testNode = new Node(200);
-            testNode.glueBottom(new Node(200));
+            testNode = new Node<>(200);
+            testNode.glueBottom(new Node<>(200));
 
             assertEquals(200 * 2, testNode.size());
         }
 
         @Test
         public void testSizeDoubleStripeDifferent() {
-            testNode = new Node(200);
-            testNode.glueBottom(new Node(100));
+            testNode = new Node<>(200);
+            testNode.glueBottom(new Node<>(100));
 
             assertEquals(200 + 100, testNode.size());
         }
 
         @Test
         public void testSizeCombined() {
-            testNode = new Node(100);
-            testNode.glueBottom(new Node(42, 15));
-            testNode.glueBottom(new Node());
+            testNode = new Node<>(100);
+            testNode.glueBottom(new Node<>(42, 15));
+            testNode.glueBottom(new Node<>());
 
             assertEquals(100 + 42 * 15 + 1, testNode.size());
         }
@@ -643,6 +642,19 @@ public class NodeTest {
                     new Path(Direction.UP, Direction.RIGHT, Direction.UP, Direction.UP,
                             Direction.UP, Direction.RIGHT, Direction.UP)),
                     testMultiNode.getNodeAt(new Point(2, -5)));
+        }
+    }
+
+    public class TestGenerics {
+        @Test
+        public void testGenerics() {
+            Node<Integer> myNode = new Node<>(100, 100);
+            myNode.place(1);
+            assertTrue(myNode.readObject().equals(1));
+
+            Node<String> myOtherNode = new Node<>(100, 100);
+            myOtherNode.place("Hello!");
+            assertTrue(myOtherNode.readObject().equals("Hello!"));
         }
     }
 }

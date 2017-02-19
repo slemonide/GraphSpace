@@ -32,21 +32,6 @@ public class PointGenerator {
             } else if (theEndIsToTheRight(current, endPoint)) {
                 current = Direction.RIGHT.shiftPoint(current);
             }
-
-            /*
-            if (theEndIsToTheRight(current, endPoint)) {
-                current = Direction.RIGHT.shiftPoint(current);
-            } else if (lineGoesAboveCurrentNode(current, endPoint)
-                    || endIsExactlyAbove(current, endPoint)) {
-                current = Direction.UP.shiftPoint(current);
-            } else if (theEndIsToTheLeft(current, endPoint)) {
-                current = Direction.LEFT.shiftPoint(current);
-            } else if (lineGoesBelowCurrentNode(current, endPoint)
-                    || endIsExactlyBelow(current, endPoint)) {
-                current = Direction.DOWN.shiftPoint(current);
-            }
-            */
-
             visited.add(current);
         }
 

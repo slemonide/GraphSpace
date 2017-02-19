@@ -5,9 +5,9 @@ import java.util.*;
 /**
  * A node in a planar graph
  */
-public class Node {
-    private Map<Direction, Node> children = new HashMap<>();
-    private Object contents;
+public class Node<E> {
+    private Map<Direction, Node<E>> children = new HashMap<>();
+    private E contents;
 
     // EFFECTS: constructs a single empty node looped onto itself
     // set contents to null
@@ -26,7 +26,7 @@ public class Node {
 
         if (height != 1) {
             for (int x = 1; x < height; x++) {
-                this.glueBottom(new Node(width));
+                this.glueBottom(new Node<E>(width));
             }
         }
     }
@@ -38,10 +38,10 @@ public class Node {
         this();
 
         if (width != 1) {
-            Node traveller = this;
+            Node<E> traveller = this;
 
             for (int x = 1; x < width; x++) {
-                traveller.connect(new Node(), Direction.RIGHT);
+                traveller.connect(new Node<E>(), Direction.RIGHT);
                 traveller = traveller.getNode(Direction.RIGHT);
             }
 
@@ -51,25 +51,25 @@ public class Node {
 
     // MODIFIES: this
     // EFFECTS: gets the node at the specified location
-    public Node getNode(Direction dir) {
+    public Node<E> getNode(Direction dir) {
         return children.get(dir);
     }
 
     // MODIFIES: this
     // EFFECTS: places obj in this node
-    public void place(Object obj) {
+    public void place(E obj) {
         contents = obj;
     }
 
     // EFFECTS: returns object stored at this node
-    public Object readObject() {
+    public E readObject() {
         return contents;
     }
 
     // MODIFIES: this, node
     // EFFECTS: connects given node to this node in the given direction
     // relative to this node
-    public void connect(Node node, Direction dir) {
+    public void connect(Node<E> node, Direction dir) {
         if (children.get(dir) != node) {
             children.put(dir, node);
             node.connect(this, dir.opposite());
@@ -80,10 +80,10 @@ public class Node {
     // MODIFIES: this, bottom
     // EFFECTS: inserts bottom graph under this graph, making sure that the
     // bottom graph connects to this graph and its old bottom graph
-    public void glueBottom(Node bottom) {
-        Node topTraveller = this;
-        Node lostChild = this.getNode(Direction.DOWN);
-        Node bottomTraveller = bottom;
+    public void glueBottom(Node<E> bottom) {
+        Node<E> topTraveller = this;
+        Node<E> lostChild = this.getNode(Direction.DOWN);
+        Node<E> bottomTraveller = bottom;
 
         do {
             topTraveller.connect(bottomTraveller, Direction.DOWN);
@@ -93,8 +93,8 @@ public class Node {
         } while (topTraveller != this && bottomTraveller != bottom);
 
         bottomTraveller = bottom;
-        Node originalBottomTraveller = bottomTraveller;
-        Node originalLostChild = lostChild;
+        Node<E> originalBottomTraveller = bottomTraveller;
+        Node<E> originalLostChild = lostChild;
 
         while (bottomTraveller.getNode(Direction.DOWN) != originalBottomTraveller) {
             bottomTraveller = bottomTraveller.getNode(Direction.DOWN);
@@ -110,13 +110,13 @@ public class Node {
 
     // EFFECTS: produce the number of nodes in the graph
     public int size() {
-        Queue<Node> todo = new LinkedList<>();
-        Set<Node> visited = new HashSet<>();
+        Queue<Node<E>> todo = new LinkedList<>();
+        Set<Node<E>> visited = new HashSet<>();
 
         todo.add(this);
 
         while (!todo.isEmpty()) {
-            Node nextNode = todo.remove();
+            Node<E> nextNode = todo.remove();
             if (!visited.contains(nextNode)) {
                 visited.add(nextNode);
 
@@ -135,7 +135,7 @@ public class Node {
     public int width() {
         Set<Node> visited = new HashSet<>();
 
-        Node traveller = this;
+        Node<E> traveller = this;
 
         do {
             traveller = traveller.getNode(Direction.RIGHT);
@@ -151,7 +151,7 @@ public class Node {
     public int height() {
         Set<Node> visited = new HashSet<>();
 
-        Node traveller = this;
+        Node<E> traveller = this;
 
         do {
             traveller = traveller.getNode(Direction.DOWN);
@@ -162,8 +162,8 @@ public class Node {
     }
 
     // EFFECTS: produce the node at the given path relative to this node
-    public Node getNodeAt(Path path) {
-        Node traveller = this;
+    public Node<E> getNodeAt(Path path) {
+        Node<E> traveller = this;
 
         for (Direction direction : path) {
             traveller = traveller.getNode(direction);
@@ -175,7 +175,7 @@ public class Node {
     // EFFECTS: produce the node at the given location relative the this node
     // with path that intersects with the given vector the most
     // If more than one node is possible, take the node closest to the horizontal
-    public Node getNodeAt(Point point) {
+    public Node<E> getNodeAt(Point point) {
         return getNodeAt(new Path(point));
     }
 }
