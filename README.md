@@ -4,7 +4,7 @@ A graph-based representation of a non-euclidian space
 Main idea:
 
 * Partition a plane into regular squares
-* Each square is a node, sides of the squares are connection
+* Each square is a node, sides of the squares are connections
 * As such, each node has four connections
 * To avoid creation of empty nodes on the borders, the space is looped onto itself (it's closed and infinite)
 * Nodes can be rearranged in such way that the plane is no longer an Euclidean plane
