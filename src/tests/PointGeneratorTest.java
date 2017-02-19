@@ -4,13 +4,13 @@ import model.Point;
 import model.PointGenerator;
 import org.junit.Test;
 
-import java.util.Set;
+import java.util.Queue;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class PointGeneratorTest {
-    private Set<Point> testPointSet;
+    private Queue<Point> testPointSet;
 
     @Test
     public void testGenerateFromPointBase() {
@@ -93,5 +93,31 @@ public class PointGeneratorTest {
         assertTrue(testPointSet.contains(new Point(4, -4)));
         assertTrue(testPointSet.contains(new Point(5, -4)));
         assertTrue(testPointSet.contains(new Point(5, -5)));
+    }
+
+    @Test
+    public void testGenerateFromPointLeftDiagonal() {
+        testPointSet = PointGenerator.generateFromPoint(new Point(-3, -3));
+        assertEquals(7, testPointSet.size());
+        assertTrue(testPointSet.contains(new Point(0, 0)));
+        assertTrue(testPointSet.contains(new Point(-1, 0)));
+        assertTrue(testPointSet.contains(new Point(-1, -1)));
+        assertTrue(testPointSet.contains(new Point(-2, -1)));
+        assertTrue(testPointSet.contains(new Point(-2, -2)));
+        assertTrue(testPointSet.contains(new Point(-3, -2)));
+        assertTrue(testPointSet.contains(new Point(-3, -3)));
+    }
+
+    @Test
+    public void testGenerateFromPointBottomDiagonal() {
+        testPointSet = PointGenerator.generateFromPoint(new Point(3, 3));
+        assertEquals(7, testPointSet.size());
+        assertTrue(testPointSet.contains(new Point(0, 0)));
+        assertTrue(testPointSet.contains(new Point(1, 0)));
+        assertTrue(testPointSet.contains(new Point(1, 1)));
+        assertTrue(testPointSet.contains(new Point(2, 1)));
+        assertTrue(testPointSet.contains(new Point(2, 2)));
+        assertTrue(testPointSet.contains(new Point(3, 2)));
+        assertTrue(testPointSet.contains(new Point(3, 3)));
     }
 }

@@ -18,7 +18,7 @@ public class Path extends LinkedList<Direction> {
     }
 
     // EFFECTS: constructs a path from given vector
-    // if in doubt, go counterclockwise
+    // if in doubt, take the node that is closest to the horizontal line
     public Path(Point point) {
         // TODO: finish
     }

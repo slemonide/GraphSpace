@@ -1,36 +1,36 @@
 package model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
- * Contains methods for generating sets of points
+ * Contains methods for generating lists of points
  */
 public class PointGenerator {
     // Suppresses default constructor, ensuring non-instantiability.
     private PointGenerator() {}
 
     // EFFECTS: returns a set containing all the points between the origin and the point
-    // if in doubt, go with the lowest point
-    public static Set<Point> generateFromPoint(Point endPoint) {
+    // if in doubt, take the node that is closest to the horizontal line
+    public static Queue<Point> generateFromPoint(Point endPoint) {
         // template as a traversal of generated graph
-        Set<Point> visited = new HashSet<>();
+        Queue<Point> visited = new LinkedList<>();
         Point current = new Point(0, 0);
         visited.add(current);
 
         while (!current.equals(endPoint)) {
-
-
-            if (lineGoesAboveCurrentNode(current, endPoint)
-                    || endIsExactlyAbove(current, endPoint)) {
+            if ((lineGoesAboveCurrentNode(current, endPoint)
+                    || endIsExactlyAbove(current, endPoint))
+                    && !visited.contains(Direction.UP.shiftPoint(current))) {
                 current = Direction.UP.shiftPoint(current);
-            } else if (theEndIsToTheRight(current, endPoint)) {
-                current = Direction.RIGHT.shiftPoint(current);
+            } else if ((lineGoesBelowCurrentNode(current, endPoint)
+                    || endIsExactlyBelow(current, endPoint))
+                    && !visited.contains(Direction.DOWN.shiftPoint(current))) {
+                current = Direction.DOWN.shiftPoint(current);
             } else if (theEndIsToTheLeft(current, endPoint)) {
                 current = Direction.LEFT.shiftPoint(current);
-            } else if (lineGoesBelowCurrentNode(current, endPoint)
-                    || endIsExactlyBelow(current, endPoint)) {
-                current = Direction.DOWN.shiftPoint(current);
+            } else if (theEndIsToTheRight(current, endPoint)) {
+                current = Direction.RIGHT.shiftPoint(current);
             }
 
             /*
