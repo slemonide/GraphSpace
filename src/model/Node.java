@@ -178,11 +178,4 @@ public class Node {
     public Node getNodeAt(Point point) {
         return getNodeAt(new Path(point));
     }
-
-    // REQUIRES: height, width > 0;
-    // EFFECTS: produce a rectangular projection of this graph on a regular Euclidean plane,
-    // as seen from this node
-    public Map<Point, Node> getMap(int height, int width) {
-        return null;
-    }
 }

@@ -8,6 +8,7 @@ import java.util.*;
 public class Test {
     public static void main(String[] args) {
         Node node = new Node(10,5);
+        System.out.println(1 / 2);
 
     }
 
