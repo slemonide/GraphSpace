@@ -174,9 +174,9 @@ public class Node {
 
     // EFFECTS: produce the node at the given location relative the this node
     // with path that intersects with the given vector the most
-    // If more than one node is possible, go counterclockwise
+    // If more than one node is possible, take the node closest to the horizontal
     public Node getNodeAt(Point point) {
-        return null; //stub
+        return getNodeAt(new Path(point));
     }
 
     // REQUIRES: height, width > 0;
