@@ -63,8 +63,8 @@ public class PathTest {
     @Test
     public void testGetNodeAtConflict() {
         testPath = new Path(new Point(-1, -1));
-        assertEquals(Direction.UP, testPath.remove());
         assertEquals(Direction.LEFT, testPath.remove());
+        assertEquals(Direction.UP, testPath.remove());
         assertTrue(testPath.isEmpty());
 
         testPath = new Path(new Point(-1, 1));
@@ -73,13 +73,13 @@ public class PathTest {
         assertTrue(testPath.isEmpty());
 
         testPath = new Path(new Point(1, -1));
-        assertEquals(Direction.DOWN, testPath.remove());
         assertEquals(Direction.RIGHT, testPath.remove());
+        assertEquals(Direction.UP, testPath.remove());
         assertTrue(testPath.isEmpty());
 
         testPath = new Path(new Point(1, 1));
         assertEquals(Direction.RIGHT, testPath.remove());
-        assertEquals(Direction.UP, testPath.remove());
+        assertEquals(Direction.DOWN, testPath.remove());
         assertTrue(testPath.isEmpty());
     }
 
@@ -87,40 +87,40 @@ public class PathTest {
     public void testGetNodeAtFar() {
         testPath = new Path(new Point(4, 4));
         assertEquals(Direction.RIGHT, testPath.remove());
-        assertEquals(Direction.UP, testPath.remove());
+        assertEquals(Direction.DOWN, testPath.remove());
         assertEquals(Direction.RIGHT, testPath.remove());
-        assertEquals(Direction.UP, testPath.remove());
+        assertEquals(Direction.DOWN, testPath.remove());
         assertEquals(Direction.RIGHT, testPath.remove());
-        assertEquals(Direction.UP, testPath.remove());
+        assertEquals(Direction.DOWN, testPath.remove());
         assertEquals(Direction.RIGHT, testPath.remove());
-        assertEquals(Direction.UP, testPath.remove());
+        assertEquals(Direction.DOWN, testPath.remove());
         assertTrue(testPath.isEmpty());
 
         testPath = new Path(new Point(4, 1));
         assertEquals(Direction.RIGHT, testPath.remove());
-        assertEquals(Direction.RIGHT, testPath.remove());
+        assertEquals(Direction.DOWN, testPath.remove());
         assertEquals(Direction.RIGHT, testPath.remove());
         assertEquals(Direction.UP, testPath.remove());
         assertEquals(Direction.RIGHT, testPath.remove());
-        assertEquals(Direction.RIGHT, testPath.remove());
+        assertEquals(Direction.DOWN, testPath.remove());
         assertEquals(Direction.RIGHT, testPath.remove());
         assertTrue(testPath.isEmpty());
 
         testPath = new Path(new Point(1, 3));
-        assertEquals(Direction.UP, testPath.remove());
         assertEquals(Direction.RIGHT, testPath.remove());
-        assertEquals(Direction.UP, testPath.remove());
-        assertEquals(Direction.UP, testPath.remove());
+        assertEquals(Direction.DOWN, testPath.remove());
+        assertEquals(Direction.DOWN, testPath.remove());
+        assertEquals(Direction.DOWN, testPath.remove());
         assertTrue(testPath.isEmpty());
 
         testPath = new Path(new Point(2, 5));
-        assertEquals(Direction.UP, testPath.remove());
         assertEquals(Direction.RIGHT, testPath.remove());
-        assertEquals(Direction.UP, testPath.remove());
-        assertEquals(Direction.UP, testPath.remove());
-        assertEquals(Direction.UP, testPath.remove());
+        assertEquals(Direction.DOWN, testPath.remove());
+        assertEquals(Direction.DOWN, testPath.remove());
+        assertEquals(Direction.DOWN, testPath.remove());
         assertEquals(Direction.RIGHT, testPath.remove());
-        assertEquals(Direction.UP, testPath.remove());
+        assertEquals(Direction.DOWN, testPath.remove());
+        assertEquals(Direction.DOWN, testPath.remove());
         assertTrue(testPath.isEmpty());
     }
 }
