@@ -2,10 +2,9 @@ package tests;
 
 import model.Direction;
 import model.Path;
+import model.Point;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.awt.*;
 
 import static org.junit.Assert.*;
 

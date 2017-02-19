@@ -4,11 +4,10 @@ import de.bechte.junit.runners.context.HierarchicalContextRunner;
 import model.Direction;
 import model.Node;
 import model.Path;
+import model.Point;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.awt.*;
 
 import static org.junit.Assert.*;
 

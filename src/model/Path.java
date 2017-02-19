@@ -1,6 +1,5 @@
 package model;
 
-import java.awt.Point;
 import java.util.Collections;
 import java.util.LinkedList;
 
@@ -21,6 +20,6 @@ public class Path extends LinkedList<Direction> {
     // EFFECTS: constructs a path from given vector
     // if in doubt, go counterclockwise
     public Path(Point point) {
-
+        // TODO: finish
     }
 }

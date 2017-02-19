@@ -1,7 +1,5 @@
 package model;
 
-import java.awt.*;
-
 public enum Direction {
     UP, DOWN, LEFT, RIGHT;
 
