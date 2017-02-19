@@ -12,4 +12,4 @@ Main idea:
 This project is supposed to provide only the implementation of the space itself, objects to be stored inside the space should be provided by whoever uses the space.
 
 ## Wiki
-For more information, wisit the Wiki: https://github.com/slemonide/GraphSpace/wiki
+For more information, visit the Wiki: https://github.com/slemonide/GraphSpace/wiki
