@@ -1,36 +1,65 @@
 digraph G {
-	a1 -> a2
-	a2 -> a3
-	a3 -> a4
-	a4 -> a5
-	a5 -> a6
-	a6 -> a7
-	a7 -> a8
+
+	subgraph cluster_timeLineA {
+		a1 -> a2
+		a2 -> a3
+		a3 -> a4
+		a4 -> a5
+		a5 -> a6
+		a6 -> a7
+		a7 -> a8
+
+		a1 [style=filled, color=yellow];
+		a8 [style=filled, color=green];
+		label = "Time Line A";
+	}
 
 	a5 -> a3 [style=dotted];
 	a3 -> b1
-	b1 -> b2
-	b2 -> b3
-	b3 -> b4
-	b4 -> b5
+
+	subgraph cluster_timeLineB {
+		b1 -> b2
+		b2 -> b3
+		b3 -> b4
+		b4 -> b5
+
+		b5 [style=filled, color=green];
+		label = "Time Line B";
+	}
 
 	b3 -> a2 [style=dotted];
 	a2 -> c1
-	c1 -> c2
-	c2 -> c3
-	c3 -> c4
+
+	subgraph cluster_timeLineC {
+		c1 -> c2
+		c2 -> c3
+		c3 -> c4
+
+		c4 [style=filled, color=green];
+		label = "Time Line C";
+	}
 
 	b4 -> b2 [style=dotted];
 	b2 -> d1
-	d1 -> d2
-	d2 -> d3
-	d3 -> d4
-	d4 -> a5
 
+	subgraph cluster_timeLineD {
+		d1 -> d2
+		d2 -> d3
+		d3 -> d4
+
+		label = "Time Line D,\nConverges to A";
+	}
+
+	d4 -> a5
 	c4 -> c3 [style=dotted];
 	c3 -> e1
-	e1 -> e2
-	e2 -> e3
-	e3 -> e4
-	e4 -> a1
+
+	subgraph cluster_timeLineE {
+		e1 -> e2
+		e2 -> e3
+		e3 -> e4
+		label = "Time Line E,\nConverges to C";
+	}
+
+	e4 -> c1
 }
