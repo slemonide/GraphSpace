@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * A world is a graph where creatures can live
+ * A world is a graph where creatures can live and observers can dwell
  */
 public class World extends Node<Set<Creature>> {
 
@@ -21,5 +21,10 @@ public class World extends Node<Set<Creature>> {
     public World(int width, int height) {
         super(width, height);
         this.place(new HashSet<Creature>());
+    }
+
+    // EFFECTS: ticks all time lines
+    public void tick() {
+        // TODO: finish
     }
 }

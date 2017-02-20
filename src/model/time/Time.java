@@ -2,37 +2,39 @@ package model.time;
 
 import model.world.World;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 /*
  * Implements the concept of time
+ * Time is a graph; time travel creates new branches;
+ * these may converge in the future
  */
 public class Time {
-    private List<World> timeLine;
-    private int ticks;
+    private Map<TimeVault, TimeVault> timeGraph;
+
+    private class TimeVault {
+
+        // EFFECTS: constructs a time vault with the given world and the number of ticks
+        public TimeVault(World world, int ticks) {
+
+        }
+    }
 
     // EFFECTS: constructs a time line with the given initial world
     public Time(World initialWorld) {
-        timeLine = new ArrayList<>();
-        timeLine.add(initialWorld);
-        ticks = 0;
     }
 
     // EFFECTS: constructs a time line with the given initial time line
-    // useful for time travelling
+    // Useful for time travelling
     public Time(Time initialTime) {
-
     }
 
     // EFFECTS: creates a new world, preserving the old one
-    public void tick() {
-        timeLine.add(timeLine.get(getTime() - 1));
-    }
+    public void tick() {}
 
     // EFFECTS: returns the number of ticks since the creation of time
     public int getTime() {
-        return ticks;
+        return 0; // stub
     }
 
     // REQUIRES: getTime() > 0

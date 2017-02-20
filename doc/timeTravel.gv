@@ -1,0 +1,36 @@
+digraph G {
+	a1 -> a2
+	a2 -> a3
+	a3 -> a4
+	a4 -> a5
+	a5 -> a6
+	a6 -> a7
+	a7 -> a8
+
+	a5 -> a3 [style=dotted];
+	a3 -> b1
+	b1 -> b2
+	b2 -> b3
+	b3 -> b4
+	b4 -> b5
+
+	b3 -> a2 [style=dotted];
+	a2 -> c1
+	c1 -> c2
+	c2 -> c3
+	c3 -> c4
+
+	b4 -> b2 [style=dotted];
+	b2 -> d1
+	d1 -> d2
+	d2 -> d3
+	d3 -> d4
+	d4 -> a5
+
+	c4 -> c3 [style=dotted];
+	c3 -> e1
+	e1 -> e2
+	e2 -> e3
+	e3 -> e4
+	e4 -> a1
+}
