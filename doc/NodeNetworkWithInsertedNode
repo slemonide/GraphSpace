@@ -1,6 +1,67 @@
 graph G  {
 
 	subgraph cluster_firstRow {
+		"(0,0)" -- "(1,0)" -- "(2,0)" -- "(3,0)" -- "(4,0)" [color=purple]
+		"(4,0)" -- "(0,0)" [style=dashed, color=red]
+	}
+	"(0,0)" -- "(0,1)" [color=purple]
+	"(1,0)" -- "(1,1)" [color=purple]
+	"(2,0)" -- "(2,1)" [color=purple]
+	"(3,0)" -- "(3,1)" [color=purple]
+	"(4,0)" -- "(4,1)" [color=purple]
+
+	subgraph cluster_secondRow {
+		"(0,1)" -- "(1,1)" -- "(2,1)" -- "(3,1)" -- "(4,1)" [color=purple]
+		"(4,1)" -- "(0,1)" [style=dashed, color=red]
+	}
+	"(0,1)" -- "(0,2)" [color=purple]
+	"(1,1)" -- "(1,2)" [color=purple]
+	"(2,1)" -- "(2,2)" [color=purple]
+	"(3,1)" -- "(3,2)" [color=purple]
+	"(4,1)" -- "(4,2)" [color=purple]
+
+
+	subgraph cluster_thirdRow {
+		"(0,2)" -- "(1,2)" -- "(2,2)" -- "(3,2)" -- "(4,2)" [color=purple]
+		"(4,2)" -- "(0,2)" [style=dashed, color=red]
+	}
+	"(0,2)" -- "(0,3)" [color=purple]
+	"(1,2)" -- "(1,3)" [color=purple]
+	"(2,2)" -- "A(1,0)" [color=purple]
+	"(3,2)" -- "(3,3)" [color=purple]
+	"(4,2)" -- "(4,3)" [color=purple]
+
+	subgraph cluster_insertedNode {
+		"A(0,0)" -- "A(1,0)" -- "A(2,0)" -- "A(3,0)" [color=purple]
+	}
+
+	"A(2,0)" -- "(2,3)" [color=purple]
+
+
+	subgraph cluster_fourthRow {
+		"(0,3)" -- "(1,3)" -- "(2,3)" -- "(3,3)" -- "(4,3)" [color=purple]
+		"(4,3)" -- "(0,3)" [style=dashed, color=red]
+	}
+	"(0,3)" -- "(0,4)" [color=purple]
+	"(1,3)" -- "(1,4)" [color=purple]
+	"(2,3)" -- "(2,4)" [color=purple]
+	"(3,3)" -- "(3,4)" [color=purple]
+	"(4,3)" -- "(4,4)" [color=purple]
+
+	subgraph cluster_fifthRow {
+		"(0,4)" -- "(1,4)" -- "(2,4)" -- "(3,4)" -- "(4,4)" [color=purple]
+		"(4,4)" -- "(0,4)" [style=dashed, color=red]
+	}
+	"(0,4)" -- "(0,0)" [style=dashed, color=red]
+	"(1,4)" -- "(1,0)" [style=dashed, color=red]
+	"(2,4)" -- "(2,0)" [style=dashed, color=red]
+	"(3,4)" -- "(3,0)" [style=dashed, color=red]
+	"(4,4)" -- "(4,0)" [style=dashed, color=red]
+}
+
+graph G  {
+
+	subgraph cluster_firstRow {
 		"(0,0)" -- "(1,0)" -- "(2,0)" -- "(3,0)" -- "(4,0)" -- "(0,0)"
 	}
 	"(0,0)" -- "(0,1)"
