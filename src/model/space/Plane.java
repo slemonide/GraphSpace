@@ -7,13 +7,13 @@ import java.util.Queue;
 /**
  * A representation of a discrete Euclidean plane filled with nodes
  */
-public class Plane extends HashMap<Point, Node> {
+public class Plane<E> extends HashMap<Point, Node<E>> {
 
     // REQUIRES: height, width > 0;
     // EFFECTS: constructs a rectangular projection of given graph on this plane,
     // as seen from observerNode, observer is placed at the center of the projection
     // if height and/or width are odd, place the observer slightly to the bottom and/or right
-    public Plane(int height, int width, Node observerNode) {
+    public Plane(int height, int width, Node<E> observerNode) {
         Queue<Point> pointsToProcess = new LinkedList<>();
 
         int xShift = width / 2;

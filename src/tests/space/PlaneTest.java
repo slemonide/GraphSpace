@@ -11,24 +11,24 @@ import static org.junit.Assert.assertEquals;
 
 public class PlaneTest {
     private final int PLANE_SIZE = 20;
-    private Node testMultiNode;
-    private Plane testPlane;
+    private Node<Object> testMultiNode;
+    private Plane<Object> testPlane;
 
     @Before
     public void runBefore() {
-        testMultiNode = new Node(PLANE_SIZE, PLANE_SIZE);
+        testMultiNode = new Node<>(PLANE_SIZE, PLANE_SIZE);
     }
 
     @Test
     public void testConstructorBase() {
-        testPlane = new Plane(1, 1, testMultiNode);
+        testPlane = new Plane<>(1, 1, testMultiNode);
         assertEquals(1, testPlane.size());
         assertEquals(testMultiNode, testPlane.get(new Point(0,0)));
     }
 
     @Test
     public void testConstructorTwoByTwo() {
-        testPlane = new Plane(2, 2, testMultiNode);
+        testPlane = new Plane<>(2, 2, testMultiNode);
         assertEquals(4, testPlane.size());
         assertEquals(testMultiNode, testPlane.get(new Point(0,0)));
         assertEquals(testMultiNode.getNode(Direction.LEFT),
@@ -41,7 +41,7 @@ public class PlaneTest {
 
     @Test
     public void testConstructorThreeByThree() {
-        testPlane = new Plane(3, 3, testMultiNode);
+        testPlane = new Plane<>(3, 3, testMultiNode);
         assertEquals(9, testPlane.size());
         assertEquals(testMultiNode, testPlane.get(new Point(0,0)));
         assertEquals(testMultiNode.getNode(Direction.RIGHT),
@@ -65,7 +65,7 @@ public class PlaneTest {
     @Test
     public void testConstructorBig() {
         // The projection is larger than the graph itself!
-        testPlane = new Plane(100, 100, testMultiNode);
+        testPlane = new Plane<>(100, 100, testMultiNode);
         assertEquals(100 * 100, testPlane.size());
         assertEquals(testMultiNode, testPlane.get(new Point(0,0)));
         assertEquals(testMultiNode, testPlane.get(new Point(PLANE_SIZE, 0)));
