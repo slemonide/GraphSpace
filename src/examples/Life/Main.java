@@ -1,6 +1,7 @@
 package examples.Life;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -23,10 +24,14 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.space.Point;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import static examples.Life.State.ALIVE;
 import static model.space.Direction.*;
 
 public class Main extends Application {
+    private static final int INTERVAL = 500;
     private int SIDE_SIZE = 16;
     private double height = 100;
     private double width = 100;
@@ -34,6 +39,7 @@ public class Main extends Application {
     private int fieldWidth = 100;
     private double cellDensity = 0.25;
     private Game game;
+    private Thread gameThread;
 
     public static void main(String[] args) {
         launch(args);
@@ -113,6 +119,7 @@ public class Main extends Application {
     private void gameScreen(final Stage primaryStage) {
         game = new Game(fieldWidth, fieldHeight);
         game.populate(cellDensity);
+        gameThread = new Thread(game);
 
         Group root = new Group();
         final Scene scene = new Scene(root, Color.BLACK);
@@ -121,6 +128,22 @@ public class Main extends Application {
 
         // render the initial screen
         render(squares);
+
+
+        // code from: http://stackoverflow.com/questions/16764549/timers-and-javafx#18654916
+        Timer timer = new java.util.Timer();
+
+        timer.schedule(new TimerTask() {
+            public void run() {
+                Platform.runLater(new Runnable() {
+                    public void run() {
+                        render(squares);
+                    }
+                });
+            }
+        }, 1, INTERVAL);
+        // up to here
+        gameThread.start();
 
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
@@ -155,6 +178,14 @@ public class Main extends Application {
                         mainScreen(primaryStage);
                     case Q:
                         mainScreen(primaryStage);
+                    case P:
+                        //if (!gameThread.isInterrupted()) {
+                        //    gameThread.interrupt();
+                        //    System.out.println("Interrupted thread!");
+                        //} else {
+                        //gameThread.start();
+                        //System.out.println("Started thread!");
+                        //}
                 }
                 render(squares);
             }
@@ -177,8 +208,17 @@ public class Main extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);
+
+
+        class Render implements Runnable {
+            @Override
+            public void run() {
+
+            }
+        }
     }
 
+    // EFFECTS: render observed scene on the screen
     private void render(Group squares) {
         int SPACING = 1;
 

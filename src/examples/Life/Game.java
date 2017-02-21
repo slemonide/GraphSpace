@@ -12,7 +12,7 @@ import static examples.Life.State.DEAD;
 /*
  * Represents a game of life
  */
-public class Game {
+public class Game implements Runnable {
     private Node field; // TODO: make this static
     private Set<Node> aliveCells;
     private int generation;
@@ -25,9 +25,17 @@ public class Game {
     }
 
     // MODIFIES: this
+    // EFFECTS: runs tick in an infinite while loop until finish() is called
+    public void run() {
+        while (!Thread.currentThread().isInterrupted()) {
+            tick();
+        }
+    }
+
+    // MODIFIES: this
     // EFFECTS: tick forward one generation
     public void tick() {
-        long startTime = System.nanoTime();
+        //long startTime = System.nanoTime();
 
         Set<Node> nextGeneration = new HashSet<>();
 
@@ -44,13 +52,13 @@ public class Game {
         generation++;
 
 
+        // TODO: remove this
+        //long endTime = System.nanoTime();
 
-        long endTime = System.nanoTime();
+        //long duration = (endTime - startTime) / 1000000;  //divide by 1000000 to get milliseconds.
 
-        long duration = (endTime - startTime) / 1000000;  //divide by 1000000 to get milliseconds.
-
-        System.out.println("tick() time: " + duration + " ms");
-        System.out.println("# of alive nodes: " + aliveCells.size());
+        //System.out.println("tick() time: " + duration + " ms");
+        //System.out.println("# of alive nodes: " + aliveCells.size());
     }
 
     private Set<Node> produceOffspring(Node cell) {
@@ -126,7 +134,7 @@ public class Game {
     }
 
     // EFFECTS: get the node state at the given position relative to the observer
-    public State readState(Point point) {
+    public examples.Life.State readState(Point point) {
         if (aliveCells.contains(field.getNodeAt(point))) {
             return ALIVE;
         } else {

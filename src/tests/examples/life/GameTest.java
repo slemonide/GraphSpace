@@ -312,4 +312,23 @@ public class GameTest {
         testGame.tick();
         assertEquals(0, testGame.getPopulation());
     }
+
+    @Test
+    public void testThreading() throws InterruptedException {
+        testGame.revive(new Point(1, 2));
+        testGame.revive(new Point(2, 2));
+        testGame.revive(new Point(2, 3));
+
+        testGame.revive(new Point(7, 1));
+        testGame.revive(new Point(6, 3));
+        testGame.revive(new Point(7, 3));
+        testGame.revive(new Point(8, 3));
+
+        Thread t1 = new Thread(testGame);
+        t1.start();
+        while (testGame.getGeneration() < 140) {
+            Thread.sleep(1000);
+        }
+        t1.interrupt();
+    }
 }
