@@ -1,6 +1,8 @@
 package examples.Life;
 
 import javafx.application.Application;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -15,8 +17,8 @@ import static model.space.Direction.*;
 
 public class Main extends Application {
     private int SIDE_SIZE = 16;
-    private int HEIGHT = SIDE_SIZE * 40;
-    private int WIDTH = SIDE_SIZE * 40;
+    private int height = SIDE_SIZE * 40;
+    private int width = SIDE_SIZE * 40;
     private Game game;
 
     public static void main(String[] args) {
@@ -24,8 +26,8 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) {
-        game = new Game(100, 100);
+    public void start(final Stage primaryStage) {
+        game = new Game(30, 30);
 
         Group root = new Group();
         final Scene scene = new Scene(root, Color.BLACK);
@@ -55,7 +57,24 @@ public class Main extends Application {
                     }
                 } else if (ke.getCode().getName().equals("Space")) {
                     game.tick();
+                } else if (ke.getCode().getName().equals("F")) {
+                    primaryStage.setFullScreen(!primaryStage.isFullScreen());
                 }
+                render(squares);
+            }
+        });
+
+        scene.heightProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                height = newValue.intValue();
+                render(squares);
+            }
+        });
+        scene.widthProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                width = newValue.intValue();
                 render(squares);
             }
         });
@@ -68,8 +87,8 @@ public class Main extends Application {
     private void render(Group squares) {
         int SPACING = 1;
 
-        for (int y = 0; y < HEIGHT / (SIDE_SIZE + SPACING); y++) {
-            for (int x = 0; x < WIDTH / (SIDE_SIZE + SPACING); x++) {
+        for (int y = 0; y < height / (SIDE_SIZE + SPACING); y++) {
+            for (int x = 0; x < width / (SIDE_SIZE + SPACING); x++) {
                 State selectedNodeState = game.readState(new Point(x, y));
                 String color;
                 if (selectedNodeState == ALIVE) {
