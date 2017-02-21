@@ -62,21 +62,21 @@ public class Main extends Application {
         Label heightLabel = new Label("Height:");
         grid.add(heightLabel, 0, 2);
 
-        TextField heightField = new TextField();
+        final TextField heightField = new TextField();
         heightField.setText(String.valueOf(fieldHeight));
         grid.add(heightField, 1, 2);
 
         Label widthLabel = new Label("Width:");
         grid.add(widthLabel, 0, 3);
 
-        TextField widthField = new TextField();
+        final TextField widthField = new TextField();
         widthField.setText(String.valueOf(fieldWidth));
         grid.add(widthField, 1, 3);
 
         Label cellDensityLabel = new Label("Cell density:");
         grid.add(cellDensityLabel, 0, 4);
 
-        Slider cellDensitySlider = new Slider();
+        final Slider cellDensitySlider = new Slider();
         cellDensitySlider.setMin(0);
         cellDensitySlider.setMax(1);
         cellDensitySlider.setValue(cellDensity);
@@ -86,11 +86,22 @@ public class Main extends Application {
         cellDensitySlider.setMinorTickCount(10);
         grid.add(cellDensitySlider, 1, 4);
 
+        final Label errorLabel = new Label("");
+        errorLabel.setMinSize(150, 10);
+        grid.add(errorLabel, 0, 6);
+
         Button start = new Button("Start");
         start.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                gameScreen(primaryStage);
+                try {
+                    fieldHeight = Integer.parseInt(heightField.getText());
+                    fieldWidth = Integer.parseInt(widthField.getText());
+                    cellDensity = cellDensitySlider.getValue();
+                    gameScreen(primaryStage);
+                } catch (NumberFormatException e) {
+                    errorLabel.setText("Please enter an integer.");
+                }
             }
         });
         grid.add(start,1,5);
@@ -114,27 +125,36 @@ public class Main extends Application {
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent ke) {
-                if (ke.getCode().getName().equals("R")) {
-                    game.purge();
-                    game.populate(cellDensity);
-                } else if (ke.getCode().isArrowKey()) {
-                    switch (ke.getCode()) {
-                        case LEFT:
-                            game.move(LEFT);
-                            break;
-                        case UP:
-                            game.move(UP);
-                            break;
-                        case RIGHT:
-                            game.move(RIGHT);
-                            break;
-                        case DOWN:
-                            game.move(DOWN);
-                    }
-                } else if (ke.getCode().getName().equals("Space")) {
-                    game.tick();
-                } else if (ke.getCode().getName().equals("F")) {
-                    primaryStage.setFullScreen(!primaryStage.isFullScreen());
+                switch (ke.getCode()) {
+                    case R:
+                        game.purge();
+                        game.populate(cellDensity);
+                        break;
+                    case UP:
+                        game.move(LEFT);
+                        break;
+                    case DOWN:
+                        game.move(DOWN);
+                        break;
+                    case LEFT:
+                        game.move(LEFT);
+                        break;
+                    case RIGHT:
+                        game.move(RIGHT);
+                        break;
+                    case SPACE:
+                        game.tick();
+                        break;
+                    case F:
+                        primaryStage.setFullScreen(!primaryStage.isFullScreen());
+                        break;
+                    case F11:
+                        primaryStage.setFullScreen(!primaryStage.isFullScreen());
+                        break;
+                    case ESCAPE:
+                        mainScreen(primaryStage);
+                    case Q:
+                        mainScreen(primaryStage);
                 }
                 render(squares);
             }
