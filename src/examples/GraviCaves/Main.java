@@ -1,5 +1,4 @@
-package application;
-
+package examples.GraviCaves;
 
 import javafx.application.Application;
 import javafx.scene.Group;

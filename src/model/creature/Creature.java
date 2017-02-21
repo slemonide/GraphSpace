@@ -1,14 +1,13 @@
 package model.creature;
 
-import model.observer.Observer;
-import model.world.World;
-
 /**
  * An creature inside the graph space.
  * There could be more than one creature per node.
  */
-public class Creature extends Observer<Creature> {
-
+public class Creature {
+    // TODO: deal with the Creature
+    //Node<>
+/*
     // EFFECTS: creates a creature at the given node in the world
     public Creature(World node) {
         super(node);
@@ -19,4 +18,5 @@ public class Creature extends Observer<Creature> {
     public void kill() {
         observedNode.readObject().remove(this);
     }
+    */
 }

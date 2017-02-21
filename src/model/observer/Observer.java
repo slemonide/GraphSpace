@@ -3,23 +3,21 @@ package model.observer;
 import model.space.Direction;
 import model.space.Node;
 
-import java.util.Set;
-
 /**
  * an immaterial observer inside the graph space
  *
  * INVARIANT: observer always has an assigned node
  */
-public class Observer<E> {
-    protected Node<Set<E>> observedNode;
+public class Observer {
+    protected Node<?> observedNode;
 
     // EFFECTS: create an observer with assigned node
-    public Observer(Node<Set<E>> node) {
+    public Observer(Node<?> node) {
         observedNode = node;
     }
 
     // EFFECTS: assigns a given node to the observer
-    public void teleport(Node<Set<E>> node) {
+    public void teleport(Node<?> node) {
         observedNode = node;
     }
 
@@ -29,7 +27,7 @@ public class Observer<E> {
     }
 
     // EFFECTS: produce the node associated with the observer
-    public Node<Set<E>> getNode() {
+    public Node<?> getNode() {
         return observedNode;
     }
 }

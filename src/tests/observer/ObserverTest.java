@@ -15,12 +15,12 @@ public class ObserverTest {
     private int PATH_LENGTH = 65;
     private int FIELD_SIZE = 100;
     private Node<Set<String>> testNode;
-    private Observer<String> testObserver;
+    private Observer testObserver;
 
     @Before
     public void runBefore() {
         testNode = new Node<>(FIELD_SIZE, FIELD_SIZE);
-        testObserver = new Observer<>(testNode);
+        testObserver = new Observer(testNode);
     }
 
     @Test

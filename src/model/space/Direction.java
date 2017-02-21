@@ -1,5 +1,8 @@
 package model.space;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public enum Direction {
     UP, DOWN, LEFT, RIGHT;
 
@@ -15,6 +18,21 @@ public enum Direction {
             default:
                 return LEFT;
         }
+    }
+
+    // EFFECTS: produce directions that are perpendicular to the given direction
+    public Set<Direction> normal() {
+        Set<Direction> normals = new HashSet<>();
+
+        if (this == UP || this == DOWN) {
+            normals.add(LEFT);
+            normals.add(RIGHT);
+        } else if (this == LEFT || this == RIGHT) {
+            normals.add(UP);
+            normals.add(DOWN);
+        }
+
+        return normals;
     }
 
     // EFFECTS: produce an arbitrary next direction

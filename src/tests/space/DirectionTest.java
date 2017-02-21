@@ -4,26 +4,48 @@ import model.space.Direction;
 import model.space.Point;
 import org.junit.Test;
 
+import static model.space.Direction.*;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertTrue;
 
 public class DirectionTest {
+
+    @Test
+    public void testNormal() {
+        for (Direction direction : Direction.values()) {
+            assertEquals(2, direction.normal().size());
+        }
+
+        assertTrue(UP.normal().contains(LEFT));
+        assertTrue(UP.normal().contains(RIGHT));
+
+        assertTrue(RIGHT.normal().contains(UP));
+        assertTrue(RIGHT.normal().contains(DOWN));
+
+        assertTrue(DOWN.normal().contains(LEFT));
+        assertTrue(DOWN.normal().contains(RIGHT));
+
+        assertTrue(LEFT.normal().contains(UP));
+        assertTrue(LEFT.normal().contains(DOWN));
+    }
+
     @Test
     public void testOpposite() {
-        assertEquals(Direction.UP, Direction.DOWN.opposite());
-        assertEquals(Direction.DOWN, Direction.UP.opposite());
-        assertEquals(Direction.LEFT, Direction.RIGHT.opposite());
-        assertEquals(Direction.RIGHT, Direction.LEFT.opposite());
+        assertEquals(UP, DOWN.opposite());
+        assertEquals(DOWN, UP.opposite());
+        assertEquals(LEFT, RIGHT.opposite());
+        assertEquals(RIGHT, LEFT.opposite());
     }
 
     @Test
     public void testShiftPoint() {
         Point p = new Point(30, 40);
 
-        assertEquals(new Point(30, 40 + 1), Direction.DOWN.shiftPoint(p));
-        assertEquals(new Point(30, 40 - 1), Direction.UP.shiftPoint(p));
-        assertEquals(new Point(30 + 1, 40), Direction.RIGHT.shiftPoint(p));
-        assertEquals(new Point(30 - 1, 40), Direction.LEFT.shiftPoint(p));
+        assertEquals(new Point(30, 40 + 1), DOWN.shiftPoint(p));
+        assertEquals(new Point(30, 40 - 1), UP.shiftPoint(p));
+        assertEquals(new Point(30 + 1, 40), RIGHT.shiftPoint(p));
+        assertEquals(new Point(30 - 1, 40), LEFT.shiftPoint(p));
     }
 
     @Test
