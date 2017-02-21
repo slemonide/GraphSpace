@@ -3,12 +3,23 @@ package examples.Life;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import model.space.Point;
 
@@ -17,8 +28,11 @@ import static model.space.Direction.*;
 
 public class Main extends Application {
     private int SIDE_SIZE = 16;
-    private int height = SIDE_SIZE * 40;
-    private int width = SIDE_SIZE * 40;
+    private double height = 100;
+    private double width = 100;
+    private int fieldHeight = 100;
+    private int fieldWidth = 100;
+    private double cellDensity = 0.25;
     private Game game;
 
     public static void main(String[] args) {
@@ -27,20 +41,82 @@ public class Main extends Application {
 
     @Override
     public void start(final Stage primaryStage) {
-        game = new Game(30, 30);
+        primaryStage.setTitle("Game Of Life");
+
+        mainScreen(primaryStage);
+
+        primaryStage.show();
+    }
+
+    private void mainScreen(final Stage primaryStage) {
+        GridPane grid = new GridPane();
+        grid.setAlignment(Pos.CENTER);
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(25, 25, 25, 25));
+
+        Text scenetitle = new Text("Game Of Life");
+        scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
+        grid.add(scenetitle, 0, 0);
+
+        Label heightLabel = new Label("Height:");
+        grid.add(heightLabel, 0, 2);
+
+        TextField heightField = new TextField();
+        heightField.setText(String.valueOf(fieldHeight));
+        grid.add(heightField, 1, 2);
+
+        Label widthLabel = new Label("Width:");
+        grid.add(widthLabel, 0, 3);
+
+        TextField widthField = new TextField();
+        widthField.setText(String.valueOf(fieldWidth));
+        grid.add(widthField, 1, 3);
+
+        Label cellDensityLabel = new Label("Cell density:");
+        grid.add(cellDensityLabel, 0, 4);
+
+        Slider cellDensitySlider = new Slider();
+        cellDensitySlider.setMin(0);
+        cellDensitySlider.setMax(1);
+        cellDensitySlider.setValue(cellDensity);
+        cellDensitySlider.setShowTickLabels(true);
+        cellDensitySlider.setShowTickMarks(true);
+        cellDensitySlider.setMajorTickUnit(0.50);
+        cellDensitySlider.setMinorTickCount(10);
+        grid.add(cellDensitySlider, 1, 4);
+
+        Button start = new Button("Start");
+        start.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                gameScreen(primaryStage);
+            }
+        });
+        grid.add(start,1,5);
+
+        Scene scene = new Scene(grid);
+        primaryStage.setScene(scene);
+    }
+
+    private void gameScreen(final Stage primaryStage) {
+        game = new Game(fieldWidth, fieldHeight);
+        game.populate(cellDensity);
 
         Group root = new Group();
         final Scene scene = new Scene(root, Color.BLACK);
-        primaryStage.setScene(scene);
         final Group squares = new Group();
         root.getChildren().add(squares);
+
+        // render the initial screen
+        render(squares);
 
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent ke) {
                 if (ke.getCode().getName().equals("R")) {
                     game.purge();
-                    game.populate(0.25);
+                    game.populate(cellDensity);
                 } else if (ke.getCode().isArrowKey()) {
                     switch (ke.getCode()) {
                         case LEFT:
@@ -79,9 +155,8 @@ public class Main extends Application {
             }
         });
 
-        render(squares);
-
-        primaryStage.show();
+        primaryStage.setScene(scene);
+        primaryStage.setMaximized(true);
     }
 
     private void render(Group squares) {
