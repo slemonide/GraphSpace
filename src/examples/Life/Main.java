@@ -1,6 +1,7 @@
 package examples.Life;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -25,13 +26,15 @@ import model.space.Point;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static examples.Life.State.ALIVE;
 import static model.space.Direction.*;
 
 public class Main extends Application {
-    private static final int INTERVAL = 1000;
-    private int sideSize = 8; // 16
+    private static final int INTERVAL = 50;
+    private int sideSize = 5; // 16
     private double height = 100;
     private double width = 100;
     private int fieldHeight = 100;
@@ -51,8 +54,8 @@ public class Main extends Application {
     public void start(final Stage primaryStage) {
         primaryStage.setTitle("Game Of Life");
 
-        //mainScreen(primaryStage);
-        gameScreen(primaryStage);
+        mainScreen(primaryStage);
+        //gameScreen(primaryStage);
 
         primaryStage.show();
     }
@@ -139,18 +142,18 @@ public class Main extends Application {
 
 
         // code from: http://stackoverflow.com/questions/16764549/timers-and-javafx#18654916
-        //Timer timer = new java.util.Timer();
-/*
+        Timer timer = new java.util.Timer();
+
         timer.schedule(new TimerTask() {
             public void run() {
                 Platform.runLater(new Runnable() {
                     public void run() {
-                        render(squares);
+                        render(renderMap);
                     }
                 });
             }
         }, 1, INTERVAL);
-
+/*
         timer.schedule(new TimerTask() {
             public void run() {
                 Platform.runLater(new Runnable() {
@@ -160,9 +163,10 @@ public class Main extends Application {
                 });
             }
         }, 1, INTERVAL);
+        */
         // up to here
-        //gameThread.start();
-*/
+        gameThread.start();
+
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent ke) {
@@ -194,17 +198,21 @@ public class Main extends Application {
                         break;
                     case ESCAPE:
                         mainScreen(primaryStage);
-                        //gameThread.interrupt();
+                        gameThread.interrupt();
                         break;
                     case Q:
                         mainScreen(primaryStage);
-                        //gameThread.interrupt();
+                        gameThread.interrupt();
                         break;
                     case MINUS:
                         sideSize = Math.max(sideSize - 1, 0);
+                        populateRenderCells(squares);
+                        render(renderMap);
                         break;
                     case PLUS:
                         sideSize++;
+                        populateRenderCells(squares);
+                        render(renderMap);
                     case P:
                         //if (!gameThread.isInterrupted()) {
                         //    gameThread.interrupt();

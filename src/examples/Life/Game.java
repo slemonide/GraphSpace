@@ -41,7 +41,7 @@ public class Game implements Runnable {
     // MODIFIES: this
     // EFFECTS: tick forward one generation
     public void tick() {
-        //long startTime = System.nanoTime();
+        long startTime = System.nanoTime();
 
         Set<Node> nextGeneration = new HashSet<>();
 
@@ -59,12 +59,12 @@ public class Game implements Runnable {
 
 
         // TODO: remove this
-        //long endTime = System.nanoTime();
+        long endTime = System.nanoTime();
 
-        //long duration = (endTime - startTime) / 1000000;  //divide by 1000000 to get milliseconds.
+        long duration = (endTime - startTime) / 1000000;  //divide by 1000000 to get milliseconds.
 
-        //System.out.println("tick() time: " + duration + " ms");
-        //System.out.println("# of alive nodes: " + aliveCells.size());
+        System.out.println("tick() time: " + duration + " ms");
+        System.out.println("# of alive nodes: " + aliveCells.size());
     }
 
     private Set<Node> produceOffspring(Node cell) {
