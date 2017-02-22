@@ -36,12 +36,10 @@ public class Main extends Application {
     private int sideSize = 8; // 16
     private double height = 100;
     private double width = 100;
-    private int fieldHeight = 300;
-    private int fieldWidth = 300;
+    private int fieldHeight = 500;
+    private int fieldWidth = 500;
     private double cellDensity = 0.25;
     private Time timeLine;
-    private List<TimeInstant> timeList;
-    private int currentGeneration;
     private Thread gameThread;
 
     // Render stuff
@@ -55,8 +53,7 @@ public class Main extends Application {
     public void start(final Stage primaryStage) {
         primaryStage.setTitle("TimeInstant Of Life");
 
-        //mainScreen(primaryStage);
-        gameScreen(primaryStage);
+        mainScreen(primaryStage);
 
         primaryStage.show();
     }
@@ -127,8 +124,6 @@ public class Main extends Application {
         TimeInstant initialTimeInstant = new TimeInstant(new Node(fieldWidth, fieldHeight), new HashSet<Node>());
         initialTimeInstant.populate(cellDensity);
         timeLine = new Time(initialTimeInstant);
-        timeList = timeLine.getTimeList();
-        currentGeneration = 0;
         gameThread = new Thread(timeLine);
         gameThread.start();
 
@@ -233,18 +228,7 @@ public class Main extends Application {
         timer.schedule(new TimerTask() {
             public void run() {
                 Platform.runLater(() -> {
-                    long startTime = System.nanoTime();
-                    //timeLine.forward();
-                    //long endTime = System.nanoTime();
-
-                    //long duration = (endTime - startTime) / 1000000;  //divide by 1000000 to get milliseconds.
-                    //System.out.println("forward() time: " + duration + " ms");
-
-                    //startTime = System.nanoTime();
                     render(renderMap);
-                    //endTime = System.nanoTime();
-                    //duration = (endTime - startTime) / 1000000;  //divide by 1000000 to get milliseconds.
-                    //System.out.println("render() time: " + duration + " ms");
                 });
             }
         }, 0, INTERVAL);
@@ -278,16 +262,11 @@ public class Main extends Application {
 
     // EFFECTS: render observed scene on the screen
     private void render(Map<Point, Rectangle> squares) {
-        //long startTime = System.nanoTime(); // debug
-
-        // from: http://stackoverflow.com/questions/1066589/iterate-through-a-hashmap#1066607
         for (Map.Entry<Point, Rectangle> pointRectangle : squares.entrySet()) {
             Point point = pointRectangle.getKey();
             Rectangle square = pointRectangle.getValue();
-            //Point point = new Point(1,2);
 
             State selectedNodeState = timeLine.readState(point);
-            //State selectedNodeState = timeInstant.readState(new Point(100, 23));
             String color;
             if (selectedNodeState == ALIVE) {
                 color = "white";
@@ -296,18 +275,5 @@ public class Main extends Application {
             }
             square.setFill(Color.web(color));
         }
-        // end
-
-        // debug
-        //long endTime = System.nanoTime();
-
-        //long duration = (endTime - startTime) / 1000000;  //divide by 1000000 to get milliseconds.
-
-        //System.out.println("render() time: " + duration + " ms");
-        //System.out.println("# of squares: " + squares.size());
-        //System.out.println(squares.size() + "," + duration);
-        //System.out.println(duration);
-        //System.out.println("Observed generation: " + timeLine.getGeneration());
-        //System.out.println("Actual generation: " + timeLine.getActualGeneration());
     }
 }

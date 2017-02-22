@@ -206,8 +206,4 @@ public class Time implements Runnable {
     public TimeInstant getCurrentTime() {
         return timeInstants.get(timeInstants.size() - 1);
     }
-
-    public List<TimeInstant> getTimeList() {
-        return timeInstants;
-    }
 }
