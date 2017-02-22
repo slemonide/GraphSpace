@@ -48,4 +48,22 @@ public class PointTest {
         assertEquals(Direction.UP, new Point(0, 0).getDirectionTo(new Point(0, -543)));
         assertEquals(Direction.DOWN, new Point(0, 0).getDirectionTo(new Point(0, 9234)));
     }
+
+    @Test
+    public void testMinus() {
+        assertEquals(new Point(12, -123), new Point(0, 23).minus(new Point(-12,  23 + 123)));
+        assertEquals(new Point(0, 0), new Point(0, 0).minus(new Point(0, 0)));
+    }
+
+    @Test
+    public void testTaxicabDistance() {
+        assertEquals(0, new Point(0, 0).taxicabDistance(new Point(0, 0)));
+        assertEquals(0, new Point(110, -20).taxicabDistance(new Point(110, -20)));
+
+        assertEquals(10, new Point(0, 10).taxicabDistance(new Point(0, 0)));
+        assertEquals(20, new Point(90, -20).taxicabDistance(new Point(110, -20)));
+
+        assertEquals(200, new Point(100, -100).taxicabDistance(new Point(0, 0)));
+        assertEquals(110, new Point(10, -30).taxicabDistance(new Point(110, -20)));
+    }
 }

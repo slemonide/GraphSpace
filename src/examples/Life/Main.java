@@ -21,11 +21,10 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Pair;
 import model.space.Point;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 import static examples.Life.State.ALIVE;
 import static model.space.Direction.*;
@@ -42,7 +41,7 @@ public class Main extends Application {
     private Thread gameThread;
 
     // Render stuff
-    private Set<Pair<Point, Rectangle>> renderCells;
+    private Map<Point, Rectangle> renderMap;
 
     public static void main(String[] args) {
         launch(args);
@@ -131,12 +130,12 @@ public class Main extends Application {
         root.getChildren().add(squares);
 
         // render the initial screen
-        width = sideSize;
-        for (int i = 1; i < 50; i++) {
-            height = sideSize * i * 100;
+        //width = sideSize;
+        //for (int i = 1; i < 50; i++) {
+        //    height = sideSize * i * 100;
             populateRenderCells(squares);
-            render(renderCells);
-        }
+            render(renderMap);
+        //}
 
 
         // code from: http://stackoverflow.com/questions/16764549/timers-and-javafx#18654916
@@ -215,7 +214,7 @@ public class Main extends Application {
                         //System.out.println("Started thread!");
                         //}
                 }
-                render(renderCells);
+                render(renderMap);
             }
         });
 
@@ -224,7 +223,7 @@ public class Main extends Application {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 height = newValue.intValue();
                 populateRenderCells(squares);
-                render(renderCells);
+                render(renderMap);
             }
         });
         scene.widthProperty().addListener(new ChangeListener<Number>() {
@@ -232,18 +231,18 @@ public class Main extends Application {
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 width = newValue.intValue();
                 populateRenderCells(squares);
-                render(renderCells);
+                render(renderMap);
             }
         });
 
-        //primaryStage.setScene(scene);
-        //primaryStage.setMaximized(true);
+        primaryStage.setScene(scene);
+        primaryStage.setMaximized(true);
     }
 
     private void populateRenderCells(Group squares) {
         int SPACING = 1;
 
-        renderCells = new HashSet<>();
+        renderMap = new HashMap<>();
 
         for (int y = 0; y < height / (sideSize + SPACING); y++) {
             for (int x = 0; x < width / (sideSize + SPACING); x++) {
@@ -251,7 +250,7 @@ public class Main extends Application {
                 Rectangle square = new Rectangle(sideSize, sideSize, Color.BLACK);
                 square.setX(x * (sideSize + SPACING));
                 square.setY(y * (sideSize + SPACING));
-                renderCells.add(new Pair<Point, Rectangle>(position, square));
+                renderMap.put(position, square);
 
                 squares.getChildren().add(square);
             }
@@ -259,32 +258,35 @@ public class Main extends Application {
     }
 
     // EFFECTS: render observed scene on the screen
-    private void render(Set<Pair<Point, Rectangle>> squares) {
-        long startTime = System.nanoTime(); // debug
+    private void render(Map<Point, Rectangle> squares) {
+        //long startTime = System.nanoTime(); // debug
 
+        // from: http://stackoverflow.com/questions/1066589/iterate-through-a-hashmap#1066607
+        for (Map.Entry<Point, Rectangle> pointRectangle : squares.entrySet()) {
+            Point point = pointRectangle.getKey();
+            Rectangle square = pointRectangle.getValue();
+            //Point point = new Point(1,2);
 
-        for (Pair posCell : squares) {
-            //State selectedNodeState = game.readState((Point) posCell.getKey());
-            State selectedNodeState = game.readState(new Point(10, 20));
+            State selectedNodeState = game.readState(point);
+            //State selectedNodeState = game.readState(new Point(100, 23));
             String color;
             if (selectedNodeState == ALIVE) {
                 color = "white";
             } else {
                 color = "black";
             }
-            Rectangle selectedSquare = (Rectangle) posCell.getValue();
-            selectedSquare.setFill(Color.web(color));
+            square.setFill(Color.web(color));
         }
-
+        // end
 
         // debug
-        long endTime = System.nanoTime();
+        //long endTime = System.nanoTime();
 
-        long duration = (endTime - startTime) / 1000000;  //divide by 1000000 to get milliseconds.
+        //long duration = (endTime - startTime) / 1000000;  //divide by 1000000 to get milliseconds.
 
         //System.out.println("render() time: " + duration + " ms");
         //System.out.println("# of squares: " + squares.size());
         //System.out.println(squares.size() + "," + duration);
-        System.out.println(duration);
+        //System.out.println(duration);
     }
 }

@@ -17,11 +17,17 @@ public class Game implements Runnable {
     private Set<Node> aliveCells;
     private int generation;
 
+    // Caching
+    private Map<Point, Node> cachedNodes;
+
     // EFFECTS: create a game of life with an empty field of given size;
     // set generation to 0
     public Game(int width, int height) {
         field = new Node(width, height);
         aliveCells = new HashSet<>();
+
+        cachedNodes = new HashMap<>();
+        cachedNodes.put(new Point(0, 0), field);// TODO: replace with constant
     }
 
     // MODIFIES: this
@@ -135,17 +141,53 @@ public class Game implements Runnable {
 
     // EFFECTS: get the node state at the given position relative to the observer
     public examples.Life.State readState(Point point) {
-        if (aliveCells.contains(field.getNodeAt(point))) {
+        Node requestedNode;
+
+        if (cachedNodes.containsKey(point)) {
+            requestedNode = cachedNodes.get(point);
+        } else {
+            Point closestPoint = getClosestPointTo(cachedNodes, point);
+            Point pathFromClosestPointToRequestedPoint = point.minus(closestPoint);
+
+            requestedNode = cachedNodes.get(closestPoint).getNodeAt(pathFromClosestPointToRequestedPoint);
+            cachedNodes.put(point, requestedNode);
+        }
+
+        if (aliveCells.contains(requestedNode)) {
             return ALIVE;
         } else {
             return DEAD;
         }
     }
 
+    private Point getClosestPointTo(Map<Point, Node> cachedNodes, Point point) {
+        Point closestPointSoFar = new Point(0, 0);
+
+        // from: http://stackoverflow.com/questions/1066589/iterate-through-a-hashmap#1066607
+        for (Point newPoint : cachedNodes.keySet()) {
+            if (newPoint.taxicabDistance(point) < closestPointSoFar.taxicabDistance(point)) {
+                closestPointSoFar = newPoint;
+            }
+        }
+
+        return closestPointSoFar;
+    }
+
     // MODIFIES: this
     // EFFECTS: moves the observer in the specified direction
     public void move(Direction direction) {
         field = field.getNode(direction);
+
+        // from: http://stackoverflow.com/questions/1066589/iterate-through-a-hashmap#1066607
+        Map<Point, Node> newCachedNodes = new HashMap<>();
+        for (Map.Entry<Point, Node> entry : cachedNodes.entrySet()) {
+            Point point = entry.getKey();
+            Node node = entry.getValue();
+
+            newCachedNodes.put(point, node.getNode(direction));
+        }
+
+        cachedNodes = newCachedNodes;
     }
 
     // MODIFIES: this

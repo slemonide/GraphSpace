@@ -42,4 +42,14 @@ public class Point extends java.awt.Point {
             return null; // TODO: add exceptions
         }
     }
+
+    // EFFECTS: returns the difference between this point and a given point
+    public Point minus(Point otherPoint) {
+        return new Point(this.x - otherPoint.x, this.y - otherPoint.y);
+    }
+
+    // EFFECTS: produce the taxicab distance between this point and a given point
+    public int taxicabDistance(Point point) {
+        return Math.abs(point.x - this.x) + Math.abs(point.y - this.y);
+    }
 }
