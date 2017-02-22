@@ -1,7 +1,6 @@
 package examples.Life;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -22,17 +21,18 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Pair;
 import model.space.Point;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.HashSet;
+import java.util.Set;
 
 import static examples.Life.State.ALIVE;
 import static model.space.Direction.*;
 
 public class Main extends Application {
-    private static final int INTERVAL = 500;
-    private int SIDE_SIZE = 16;
+    private static final int INTERVAL = 1000;
+    private int sideSize = 8; // 16
     private double height = 100;
     private double width = 100;
     private int fieldHeight = 100;
@@ -40,6 +40,9 @@ public class Main extends Application {
     private double cellDensity = 0.25;
     private Game game;
     private Thread gameThread;
+
+    // Render stuff
+    private Set<Pair<Point, Rectangle>> renderCells;
 
     public static void main(String[] args) {
         launch(args);
@@ -49,7 +52,8 @@ public class Main extends Application {
     public void start(final Stage primaryStage) {
         primaryStage.setTitle("Game Of Life");
 
-        mainScreen(primaryStage);
+        //mainScreen(primaryStage);
+        gameScreen(primaryStage);
 
         primaryStage.show();
     }
@@ -127,12 +131,17 @@ public class Main extends Application {
         root.getChildren().add(squares);
 
         // render the initial screen
-        render(squares);
+        width = sideSize;
+        for (int i = 1; i < 50; i++) {
+            height = sideSize * i * 100;
+            populateRenderCells(squares);
+            render(renderCells);
+        }
 
 
         // code from: http://stackoverflow.com/questions/16764549/timers-and-javafx#18654916
-        Timer timer = new java.util.Timer();
-
+        //Timer timer = new java.util.Timer();
+/*
         timer.schedule(new TimerTask() {
             public void run() {
                 Platform.runLater(new Runnable() {
@@ -142,9 +151,19 @@ public class Main extends Application {
                 });
             }
         }, 1, INTERVAL);
-        // up to here
-        gameThread.start();
 
+        timer.schedule(new TimerTask() {
+            public void run() {
+                Platform.runLater(new Runnable() {
+                    public void run() {
+                        game.tick();
+                    }
+                });
+            }
+        }, 1, INTERVAL);
+        // up to here
+        //gameThread.start();
+*/
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent ke) {
@@ -154,7 +173,7 @@ public class Main extends Application {
                         game.populate(cellDensity);
                         break;
                     case UP:
-                        game.move(LEFT);
+                        game.move(UP);
                         break;
                     case DOWN:
                         game.move(DOWN);
@@ -176,8 +195,17 @@ public class Main extends Application {
                         break;
                     case ESCAPE:
                         mainScreen(primaryStage);
+                        //gameThread.interrupt();
+                        break;
                     case Q:
                         mainScreen(primaryStage);
+                        //gameThread.interrupt();
+                        break;
+                    case MINUS:
+                        sideSize = Math.max(sideSize - 1, 0);
+                        break;
+                    case PLUS:
+                        sideSize++;
                     case P:
                         //if (!gameThread.isInterrupted()) {
                         //    gameThread.interrupt();
@@ -187,7 +215,7 @@ public class Main extends Application {
                         //System.out.println("Started thread!");
                         //}
                 }
-                render(squares);
+                render(renderCells);
             }
         });
 
@@ -195,48 +223,68 @@ public class Main extends Application {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 height = newValue.intValue();
-                render(squares);
+                populateRenderCells(squares);
+                render(renderCells);
             }
         });
         scene.widthProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
                 width = newValue.intValue();
-                render(squares);
+                populateRenderCells(squares);
+                render(renderCells);
             }
         });
 
-        primaryStage.setScene(scene);
-        primaryStage.setMaximized(true);
+        //primaryStage.setScene(scene);
+        //primaryStage.setMaximized(true);
+    }
 
+    private void populateRenderCells(Group squares) {
+        int SPACING = 1;
 
-        class Render implements Runnable {
-            @Override
-            public void run() {
+        renderCells = new HashSet<>();
 
+        for (int y = 0; y < height / (sideSize + SPACING); y++) {
+            for (int x = 0; x < width / (sideSize + SPACING); x++) {
+                Point position = new Point(x, y);
+                Rectangle square = new Rectangle(sideSize, sideSize, Color.BLACK);
+                square.setX(x * (sideSize + SPACING));
+                square.setY(y * (sideSize + SPACING));
+                renderCells.add(new Pair<Point, Rectangle>(position, square));
+
+                squares.getChildren().add(square);
             }
         }
     }
 
     // EFFECTS: render observed scene on the screen
-    private void render(Group squares) {
-        int SPACING = 1;
+    private void render(Set<Pair<Point, Rectangle>> squares) {
+        long startTime = System.nanoTime(); // debug
 
-        for (int y = 0; y < height / (SIDE_SIZE + SPACING); y++) {
-            for (int x = 0; x < width / (SIDE_SIZE + SPACING); x++) {
-                State selectedNodeState = game.readState(new Point(x, y));
-                String color;
-                if (selectedNodeState == ALIVE) {
-                    color = "white";
-                } else {
-                    color = "black";
-                }
-                Rectangle square = new Rectangle(SIDE_SIZE, SIDE_SIZE, Color.web(color));
-                square.setX(x * (SIDE_SIZE + SPACING));
-                square.setY(y * (SIDE_SIZE + SPACING));
 
-                squares.getChildren().add(square);
+        for (Pair posCell : squares) {
+            //State selectedNodeState = game.readState((Point) posCell.getKey());
+            State selectedNodeState = game.readState(new Point(10, 20));
+            String color;
+            if (selectedNodeState == ALIVE) {
+                color = "white";
+            } else {
+                color = "black";
             }
+            Rectangle selectedSquare = (Rectangle) posCell.getValue();
+            selectedSquare.setFill(Color.web(color));
         }
+
+
+        // debug
+        long endTime = System.nanoTime();
+
+        long duration = (endTime - startTime) / 1000000;  //divide by 1000000 to get milliseconds.
+
+        //System.out.println("render() time: " + duration + " ms");
+        //System.out.println("# of squares: " + squares.size());
+        //System.out.println(squares.size() + "," + duration);
+        System.out.println(duration);
     }
 }
