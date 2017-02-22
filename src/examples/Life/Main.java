@@ -1,7 +1,6 @@
 package examples.Life;
 
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -22,25 +21,27 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import model.space.Node;
 import model.space.Point;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Timer;
-import java.util.TimerTask;
 
 import static examples.Life.State.ALIVE;
 import static model.space.Direction.*;
 
 public class Main extends Application {
     private static final int INTERVAL = 50;
-    private int sideSize = 5; // 16
+    private int sideSize = 8; // 16
     private double height = 100;
     private double width = 100;
     private int fieldHeight = 100;
     private int fieldWidth = 100;
     private double cellDensity = 0.25;
-    private Game game;
+    private Time timeLine;
     private Thread gameThread;
 
     // Render stuff
@@ -52,10 +53,10 @@ public class Main extends Application {
 
     @Override
     public void start(final Stage primaryStage) {
-        primaryStage.setTitle("Game Of Life");
+        primaryStage.setTitle("TimeInstant Of Life");
 
-        mainScreen(primaryStage);
-        //gameScreen(primaryStage);
+        //mainScreen(primaryStage);
+        gameScreen(primaryStage);
 
         primaryStage.show();
     }
@@ -67,7 +68,7 @@ public class Main extends Application {
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
 
-        Text scenetitle = new Text("Game Of Life");
+        Text scenetitle = new Text("TimeInstant Of Life");
         scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
         grid.add(scenetitle, 0, 0);
 
@@ -123,9 +124,10 @@ public class Main extends Application {
     }
 
     private void gameScreen(final Stage primaryStage) {
-        game = new Game(fieldWidth, fieldHeight);
-        game.populate(cellDensity);
-        gameThread = new Thread(game);
+        TimeInstant initialTimeInstant = new TimeInstant(new Node(fieldWidth, fieldHeight), new HashSet<Node>());
+        initialTimeInstant.populate(cellDensity);
+        timeLine = new Time(initialTimeInstant);
+        gameThread = new Thread(timeLine);
 
         Group root = new Group();
         final Scene scene = new Scene(root, Color.BLACK);
@@ -142,12 +144,13 @@ public class Main extends Application {
 
 
         // code from: http://stackoverflow.com/questions/16764549/timers-and-javafx#18654916
-        Timer timer = new java.util.Timer();
-
+        final Timer timer = new java.util.Timer();
+/*
         timer.schedule(new TimerTask() {
             public void run() {
                 Platform.runLater(new Runnable() {
                     public void run() {
+                        timeLine.forward();
                         render(renderMap);
                     }
                 });
@@ -158,37 +161,39 @@ public class Main extends Application {
             public void run() {
                 Platform.runLater(new Runnable() {
                     public void run() {
-                        game.tick();
+                        timeInstant.tick();
                     }
                 });
             }
         }, 1, INTERVAL);
         */
         // up to here
-        gameThread.start();
+        //gameThread.start();
 
         scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent ke) {
                 switch (ke.getCode()) {
                     case R:
-                        game.purge();
-                        game.populate(cellDensity);
+                        // TODO: fix purge
+                        //timeInstant.purge();
+                        //timeInstant.populate(cellDensity);
                         break;
                     case UP:
-                        game.move(UP);
+                        timeLine.getCurrentTimeInstant().move(UP);
                         break;
                     case DOWN:
-                        game.move(DOWN);
+                        timeLine.getCurrentTimeInstant().move(DOWN);
                         break;
                     case LEFT:
-                        game.move(LEFT);
+                        timeLine.getCurrentTimeInstant().move(LEFT);
                         break;
                     case RIGHT:
-                        game.move(RIGHT);
+                        timeLine.getCurrentTimeInstant().move(RIGHT);
                         break;
                     case SPACE:
-                        game.tick();
+                        timeLine.forward();
+                        render(renderMap);
                         break;
                     case F:
                         primaryStage.setFullScreen(!primaryStage.isFullScreen());
@@ -245,6 +250,14 @@ public class Main extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);
+
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                gameThread.interrupt();
+                timer.cancel();
+            }
+        });
     }
 
     private void populateRenderCells(Group squares) {
@@ -267,7 +280,7 @@ public class Main extends Application {
 
     // EFFECTS: render observed scene on the screen
     private void render(Map<Point, Rectangle> squares) {
-        //long startTime = System.nanoTime(); // debug
+        long startTime = System.nanoTime(); // debug
 
         // from: http://stackoverflow.com/questions/1066589/iterate-through-a-hashmap#1066607
         for (Map.Entry<Point, Rectangle> pointRectangle : squares.entrySet()) {
@@ -275,8 +288,8 @@ public class Main extends Application {
             Rectangle square = pointRectangle.getValue();
             //Point point = new Point(1,2);
 
-            State selectedNodeState = game.readState(point);
-            //State selectedNodeState = game.readState(new Point(100, 23));
+            State selectedNodeState = timeLine.getCurrentTimeInstant().readState(point);
+            //State selectedNodeState = timeInstant.readState(new Point(100, 23));
             String color;
             if (selectedNodeState == ALIVE) {
                 color = "white";
@@ -288,11 +301,11 @@ public class Main extends Application {
         // end
 
         // debug
-        //long endTime = System.nanoTime();
+        long endTime = System.nanoTime();
 
-        //long duration = (endTime - startTime) / 1000000;  //divide by 1000000 to get milliseconds.
+        long duration = (endTime - startTime) / 1000000;  //divide by 1000000 to get milliseconds.
 
-        //System.out.println("render() time: " + duration + " ms");
+        System.out.println("render() time: " + duration + " ms");
         //System.out.println("# of squares: " + squares.size());
         //System.out.println(squares.size() + "," + duration);
         //System.out.println(duration);

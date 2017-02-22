@@ -11,115 +11,24 @@ import static examples.Life.State.DEAD;
 
 /*
  * Represents a game of life
+ * TODO: should be a static class
  */
-public class Game implements Runnable {
+public class TimeInstant {
     private Node field; // TODO: make this static
     private Set<Node> aliveCells;
-    private int generation;
 
     // Caching
     private Map<Point, Node> cachedNodes;
+    private TimeInstant next;
 
-    // EFFECTS: create a game of life with an empty field of given size;
+    // EFFECTS: create a game of life on the given field;
     // set generation to 0
-    public Game(int width, int height) {
-        field = new Node(width, height);
-        aliveCells = new HashSet<>();
+    public TimeInstant(Node field, Set<Node> currentGeneration) {
+        this.field = field;
+        aliveCells = currentGeneration;
 
         cachedNodes = new HashMap<>();
         cachedNodes.put(new Point(0, 0), field);// TODO: replace with constant
-    }
-
-    // MODIFIES: this
-    // EFFECTS: runs tick in an infinite while loop until finish() is called
-    public void run() {
-        while (!Thread.currentThread().isInterrupted()) {
-            tick();
-        }
-    }
-
-    // MODIFIES: this
-    // EFFECTS: tick forward one generation
-    public void tick() {
-        long startTime = System.nanoTime();
-
-        Set<Node> nextGeneration = new HashSet<>();
-
-        for (Node cell : aliveCells) {
-            if (survives(cell)) {
-                nextGeneration.add(cell);
-            }
-
-            nextGeneration.addAll(produceOffspring(cell));
-        }
-
-        aliveCells = nextGeneration;
-
-        generation++;
-
-
-        // TODO: remove this
-        long endTime = System.nanoTime();
-
-        long duration = (endTime - startTime) / 1000000;  //divide by 1000000 to get milliseconds.
-
-        System.out.println("tick() time: " + duration + " ms");
-        System.out.println("# of alive nodes: " + aliveCells.size());
-    }
-
-    private Set<Node> produceOffspring(Node cell) {
-        Set<Node> offspring = new HashSet<>();
-
-        for (Direction direction : Direction.values()) {
-            if (breeds(cell.getNode(direction))) {
-                offspring.add(cell.getNode(direction));
-            }
-
-            for (Direction normalDirection : direction.normal()) {
-                if (breeds(cell.getNode(direction).getNode(normalDirection))) {
-                    offspring.add(cell.getNode(direction).getNode(normalDirection));
-                }
-            }
-        }
-
-        return offspring;
-    }
-
-    private boolean breeds(Node cell) {
-        return (numberOfNeighbours(cell) == 3);
-    }
-
-    private boolean survives(Node cell) {
-        return (numberOfNeighbours(cell) == 2 || numberOfNeighbours(cell) == 3);
-    }
-
-    private int numberOfNeighbours(Node cell) {
-        int count = 0;
-        Set<Node> visitedDirections = new HashSet<>();
-
-        // TODO: add tests for 1x1 and 100x1 and 1x100 fields
-        for (Direction direction : Direction.values()) {
-            if (aliveCells.contains(cell.getNode(direction))
-                    && !visitedDirections.contains(cell.getNode(direction))) {
-                count++;
-                visitedDirections.add(cell.getNode(direction));
-            }
-
-            for (Direction normalDirection : direction.normal()) {
-                if (aliveCells.contains(cell.getNode(direction).getNode(normalDirection))
-                        && !visitedDirections.contains(cell.getNode(direction).getNode(normalDirection))) {
-                    count++;
-                    visitedDirections.add(cell.getNode(direction).getNode(normalDirection));
-                }
-            }
-        }
-
-        return count;
-    }
-
-    // EFFECTS: return the generation number
-    public int getGeneration() {
-        return generation;
     }
 
     // EFFECTS: produce the total number of alive cells
@@ -231,5 +140,29 @@ public class Game implements Runnable {
         }
 
         return visited;
+    }
+
+    // EFFECTS: return the set of alive cells
+    public Set<Node> getAliveCells() {
+        return aliveCells;
+    }
+
+    public Node getField() {
+        return field;
+    }
+
+    // EFFECTS: produce the next time instance, if no such instance available, produce null
+    protected TimeInstant getFuture() {
+        return next;
+    }
+
+    // EFFECTS: produce the previous time instant
+    // TODO: finish
+    protected TimeInstant getPast() {
+        return null; // stub
+    }
+
+    public void setNext(TimeInstant next) {
+        this.next = next;
     }
 }
