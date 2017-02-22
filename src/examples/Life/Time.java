@@ -2,9 +2,15 @@ package examples.Life;
 
 import model.space.Direction;
 import model.space.Node;
+import model.space.Point;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+
+import static examples.Life.State.ALIVE;
+import static examples.Life.State.DEAD;
 
 /*
  * Represents time
@@ -16,6 +22,8 @@ public class Time implements Runnable {
     private TimeInstant lastTime;
     private int currentGenerationNumber;
     private int actualGenerationNumber;
+    // Caching
+    private Map<Point, Node> cachedNodes;
 
     // EFFECTS: create a Time instance with the given starting timeInstant
     public Time(TimeInstant initialTimeInstant) {
@@ -24,6 +32,9 @@ public class Time implements Runnable {
         currentTime = initialTimeInstant;
         lastTime = currentTime;
         field = initialTimeInstant.getField();
+
+        cachedNodes = new HashMap<>();
+        cachedNodes.put(new Point(0, 0), field);// TODO: replace with constant
     }
 
     // EFFECTS: produces the current state of the timeInstant in the observer's timeline
@@ -145,5 +156,56 @@ public class Time implements Runnable {
         }
 
         return count;
+    }
+
+    // EFFECTS: get the node state at the given position relative to the observer
+    public examples.Life.State readState(Point point) {
+        Node requestedNode;
+
+        if (cachedNodes.containsKey(point)) {
+            requestedNode = cachedNodes.get(point);
+        } else {
+            Point closestPoint = getClosestPointTo(cachedNodes, point);
+            Point pathFromClosestPointToRequestedPoint = point.minus(closestPoint);
+
+            requestedNode = cachedNodes.get(closestPoint).getNodeAt(pathFromClosestPointToRequestedPoint);
+            cachedNodes.put(point, requestedNode);
+        }
+
+        if (currentTime.getAliveCells().contains(requestedNode)) {
+            return ALIVE;
+        } else {
+            return DEAD;
+        }
+    }
+
+    private Point getClosestPointTo(Map<Point, Node> cachedNodes, Point point) {
+        Point closestPointSoFar = new Point(0, 0);
+
+        // from: http://stackoverflow.com/questions/1066589/iterate-through-a-hashmap#1066607
+        for (Point newPoint : cachedNodes.keySet()) {
+            if (newPoint.taxicabDistance(point) < closestPointSoFar.taxicabDistance(point)) {
+                closestPointSoFar = newPoint;
+            }
+        }
+
+        return closestPointSoFar;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: moves the observer in the specified direction
+    public void move(Direction direction) {
+        field = field.getNode(direction);
+
+        // from: http://stackoverflow.com/questions/1066589/iterate-through-a-hashmap#1066607
+        Map<Point, Node> newCachedNodes = new HashMap<>();
+        for (Map.Entry<Point, Node> entry : cachedNodes.entrySet()) {
+            Point point = entry.getKey();
+            Node node = entry.getValue();
+
+            newCachedNodes.put(point, node.getNode(direction));
+        }
+
+        cachedNodes = newCachedNodes;
     }
 }

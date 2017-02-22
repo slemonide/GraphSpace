@@ -180,16 +180,16 @@ public class Main extends Application {
                         //timeInstant.populate(cellDensity);
                         break;
                     case UP:
-                        timeLine.getCurrentTimeInstant().move(UP);
+                        timeLine.move(UP);
                         break;
                     case DOWN:
-                        timeLine.getCurrentTimeInstant().move(DOWN);
+                        timeLine.move(DOWN);
                         break;
                     case LEFT:
-                        timeLine.getCurrentTimeInstant().move(LEFT);
+                        timeLine.move(LEFT);
                         break;
                     case RIGHT:
-                        timeLine.getCurrentTimeInstant().move(RIGHT);
+                        timeLine.move(RIGHT);
                         break;
                     case SPACE:
                         timeLine.forward();
@@ -288,7 +288,7 @@ public class Main extends Application {
             Rectangle square = pointRectangle.getValue();
             //Point point = new Point(1,2);
 
-            State selectedNodeState = timeLine.getCurrentTimeInstant().readState(point);
+            State selectedNodeState = timeLine.readState(point);
             //State selectedNodeState = timeInstant.readState(new Point(100, 23));
             String color;
             if (selectedNodeState == ALIVE) {
