@@ -95,6 +95,7 @@ public class Time implements Runnable {
 
         currentTime.setNext(new TimeInstant(field, nextGeneration));
         lastTime.setNext(new TimeInstant(field, nextGeneration));
+        lastTime = lastTime.getFuture();
         actualGenerationNumber++;
 
         // TODO: remove this
