@@ -91,19 +91,4 @@ public class TimeInstant {
     public Node getField() {
         return field;
     }
-
-    // EFFECTS: produce the next time instance, if no such instance available, produce null
-    protected TimeInstant getFuture() {
-        return next;
-    }
-
-    // EFFECTS: produce the previous time instant
-    // TODO: finish
-    protected TimeInstant getPast() {
-        return null; // stub
-    }
-
-    public void setNext(TimeInstant next) {
-        this.next = next;
-    }
 }

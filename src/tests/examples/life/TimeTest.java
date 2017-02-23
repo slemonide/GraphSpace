@@ -265,6 +265,7 @@ public class TimeTest {
         timeLine.getCurrentTimeInstant().revive(new Point(7, 3));
         timeLine.getCurrentTimeInstant().revive(new Point(8, 3));
 
+        assertEquals(7, timeLine.getActualTimeInstant().getPopulation());
 
         for (int i = 1; i < 130; i++) {
             timeLine.forward();
@@ -290,7 +291,49 @@ public class TimeTest {
         t1.start();
         while (timeLine.getActualGeneration() < 140) {
             Thread.sleep(1000);
+            assertEquals(7, timeLine.getCurrentTimeInstant().getPopulation());
+            assertEquals(0, timeLine.getGeneration());
         }
+        t1.interrupt();
+    }
+
+    @Test
+    public void testTickDieHardThreading() throws InterruptedException {
+        /* Die Hard pattern:
+         *   | 1 2 3 4 5 6 7 8
+         *---|----------------
+         * 1 | 0 0 0 0 0 0 1 0
+         * 2 | 1 1 0 0 0 0 0 0
+         * 3 | 0 1 0 0 0 1 1 1
+         *
+         * Should cease to exist in exactly 130 generations
+         *
+         */
+        // the bottom left thing
+        timeLine.getCurrentTimeInstant().revive(new Point(1, 2));
+        timeLine.getCurrentTimeInstant().revive(new Point(2, 2));
+        timeLine.getCurrentTimeInstant().revive(new Point(2, 3));
+
+        // other thing
+        timeLine.getCurrentTimeInstant().revive(new Point(7, 1));
+        timeLine.getCurrentTimeInstant().revive(new Point(6, 3));
+        timeLine.getCurrentTimeInstant().revive(new Point(7, 3));
+        timeLine.getCurrentTimeInstant().revive(new Point(8, 3));
+
+        Thread t1 = new Thread(timeLine);
+        t1.start();
+        Thread.sleep(1000);
+
+        assertEquals(7, timeLine.getCurrentTimeInstant().getPopulation());
+
+        for (int i = 1; i < 130; i++) {
+            timeLine.forward();
+            assertNotEquals(0, timeLine.getCurrentTimeInstant().getPopulation());
+        }
+
+        timeLine.forward();
+        assertEquals(0, timeLine.getCurrentTimeInstant().getPopulation());
+
         t1.interrupt();
     }
 }

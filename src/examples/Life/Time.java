@@ -33,18 +33,17 @@ public class Time implements Runnable {
 
     // EFFECTS: produces the current state of the timeInstant in the observer's timeline
     public TimeInstant getCurrentTimeInstant() {
-        return getCurrentTime();
+        return timeInstants.get(currentGenerationNumber);
     }
 
     // MODIFIES: this
-    // EFFECTS: change current timeInstant to the next timeInstant (like TimeInstant.tick()) and produce the timeInstant
-    public TimeInstant forward() {
+    // EFFECTS: change current timeInstant to the next timeInstant (like TimeInstant.tick())
+    public void forward() {
         if (currentGenerationNumber == timeInstants.size() - 1) {
             tick();
         }
 
         currentGenerationNumber++;
-        return timeInstants.get(currentGenerationNumber);
     }
 
     // MODIFIES: this
@@ -76,7 +75,7 @@ public class Time implements Runnable {
     // MODIFIES: this
     // EFFECTS: tick forward one generation
     private void tick() {
-        long startTime = System.nanoTime();
+        //long startTime = System.nanoTime();
 
         Set<Node> nextGeneration = new HashSet<>();
         Set<Node> currentGeneration =  timeInstants.get(timeInstants.size() - 1).getAliveCells();
@@ -92,12 +91,12 @@ public class Time implements Runnable {
         timeInstants.add(new TimeInstant(field, nextGeneration));
 
         // TODO: remove this
-        long endTime = System.nanoTime();
+        //long endTime = System.nanoTime();
 
-        long duration = (endTime - startTime) / 1000000;  //divide by 1000000 to get milliseconds.
+        //long duration = (endTime - startTime) / 1000000;  //divide by 1000000 to get milliseconds.
 
-        System.out.println("tick() time: " + duration + " ms");
-        System.out.println("# of alive nodes: " + nextGeneration.size());
+        //System.out.println("tick() time: " + duration + " ms");
+        //System.out.println("# of alive nodes: " + nextGeneration.size());
     }
 
     private Set<Node> produceOffspring(Node cell) {
@@ -130,7 +129,7 @@ public class Time implements Runnable {
     private int numberOfNeighbours(Node cell) {
         int count = 0;
         Set<Node> visitedDirections = new HashSet<>();
-        Set<Node> currentGeneration = getCurrentTime().getAliveCells();
+        Set<Node> currentGeneration = getActualTimeInstant().getAliveCells();
 
         // TODO: add tests for 1x1 and 100x1 and 1x100 fields
         for (Direction direction : Direction.values()) {
@@ -166,7 +165,7 @@ public class Time implements Runnable {
             cachedNodes.put(point, requestedNode);
         }
 
-        if (getCurrentTime().getAliveCells().contains(requestedNode)) {
+        if (getActualTimeInstant().getAliveCells().contains(requestedNode)) {
             return ALIVE;
         } else {
             return DEAD;
@@ -203,7 +202,7 @@ public class Time implements Runnable {
         cachedNodes = newCachedNodes;
     }
 
-    public TimeInstant getCurrentTime() {
+    public TimeInstant getActualTimeInstant() {
         return timeInstants.get(timeInstants.size() - 1);
     }
 }
