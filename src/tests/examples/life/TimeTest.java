@@ -10,11 +10,8 @@ import org.junit.Test;
 
 import java.util.HashSet;
 
-import static examples.Life.State.ALIVE;
-import static examples.Life.State.DEAD;
 import static model.space.Direction.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.*;
 
 public class TimeTest {
     private int WIDTH = 100;
@@ -36,7 +33,7 @@ public class TimeTest {
             for (int x = 0; x < WIDTH; x++) {
                 Point selectedPoint = new Point(x, y);
 
-                assertEquals(DEAD, timeLine.readState(selectedPoint));
+                assertFalse(timeLine.isAlive(selectedPoint));
             }
         }
     }
@@ -46,8 +43,8 @@ public class TimeTest {
         timeLine.getCurrentTimeInstant().revive(new Point(0, 0));
         timeLine.getCurrentTimeInstant().revive(new Point(1, 100));
 
-        assertEquals(ALIVE, timeLine.readState(new Point(0, 0)));
-        assertEquals(ALIVE, timeLine.readState(new Point(1, 100)));
+        assertTrue(timeLine.isAlive(new Point(0, 0)));
+        assertTrue(timeLine.isAlive(new Point(1, 100)));
         assertEquals(2, timeLine.getCurrentTimeInstant().getPopulation());
     }
 
@@ -58,9 +55,9 @@ public class TimeTest {
         timeLine.getCurrentTimeInstant().revive(new Point(401, 1));
         timeLine.getCurrentTimeInstant().revive(new Point(0, 0));
 
-        assertEquals(ALIVE, timeLine.readState(new Point(0, 0)));
+        assertTrue(timeLine.isAlive(new Point(0, 0)));
         timeLine.getCurrentTimeInstant().kill(new Point(0, 0));
-        assertEquals(DEAD, timeLine.readState(new Point(0, 0)));
+        assertFalse(timeLine.isAlive(new Point(0, 0)));
         assertEquals(3, timeLine.getCurrentTimeInstant().getPopulation());
     }
 
@@ -68,21 +65,21 @@ public class TimeTest {
     public void testMove() {
         timeLine.getCurrentTimeInstant().revive(ORIGIN);
         timeLine.getCurrentTimeInstant().revive(DISTANT_POINT);
-        assertEquals(ALIVE, timeLine.readState(ORIGIN));
-        assertEquals(ALIVE, timeLine.readState(DISTANT_POINT));
+        assertTrue(timeLine.isAlive(ORIGIN));
+        assertTrue(timeLine.isAlive(DISTANT_POINT));
 
         for (Direction direction : Direction.values()) {
-            assertEquals(DEAD, timeLine.readState(direction.shiftPoint(ORIGIN)));
-            assertEquals(DEAD, timeLine.readState(direction.shiftPoint(DISTANT_POINT)));
+            assertFalse(timeLine.isAlive(direction.shiftPoint(ORIGIN)));
+            assertFalse(timeLine.isAlive(direction.shiftPoint(DISTANT_POINT)));
         }
 
         for (Direction direction : Direction.values()) {
             timeLine.move(direction);
-            assertEquals(DEAD, timeLine.readState(ORIGIN));
-            assertEquals(DEAD, timeLine.readState(DISTANT_POINT));
+            assertFalse(timeLine.isAlive(ORIGIN));
+            assertFalse(timeLine.isAlive(DISTANT_POINT));
             timeLine.move(direction.opposite());
-            assertEquals(ALIVE, timeLine.readState(ORIGIN));
-            assertEquals(ALIVE, timeLine.readState(DISTANT_POINT));
+            assertTrue(timeLine.isAlive(ORIGIN));
+            assertTrue(timeLine.isAlive(DISTANT_POINT));
         }
     }
 
@@ -109,8 +106,8 @@ public class TimeTest {
         timeLine.move(LEFT);
         timeLine.move(LEFT); // 2 left
 
-        assertEquals(ALIVE, timeLine.readState(ORIGIN));
-        assertEquals(ALIVE, timeLine.readState(DISTANT_POINT));
+        assertTrue(timeLine.isAlive(ORIGIN));
+        assertTrue(timeLine.isAlive(DISTANT_POINT));
     }
 
     @Test
@@ -130,7 +127,7 @@ public class TimeTest {
         assertEquals(0, timeLine.getActualGeneration());
         assertEquals(1, timeLine.getCurrentTimeInstant().getPopulation());
         timeLine.forward();
-        assertEquals(DEAD, timeLine.readState(ORIGIN));
+        assertFalse(timeLine.isAlive(ORIGIN));
         assertEquals(1, timeLine.getGeneration());
         assertEquals(1, timeLine.getActualGeneration());
         assertEquals(0, timeLine.getCurrentTimeInstant().getPopulation());
@@ -138,13 +135,13 @@ public class TimeTest {
         for (Direction direction : Direction.values()) {
             timeLine.getCurrentTimeInstant().revive(ORIGIN);
             timeLine.getCurrentTimeInstant().revive(direction.shiftPoint(ORIGIN));
-            assertEquals(ALIVE, timeLine.readState(ORIGIN));
-            assertEquals(ALIVE, timeLine.readState(direction.shiftPoint(ORIGIN)));
+            assertTrue(timeLine.isAlive(ORIGIN));
+            assertTrue(timeLine.isAlive(direction.shiftPoint(ORIGIN)));
             assertEquals(2, timeLine.getCurrentTimeInstant().getPopulation());
 
             timeLine.forward();
-            assertEquals(DEAD, timeLine.readState(ORIGIN));
-            assertEquals(DEAD, timeLine.readState(direction.shiftPoint(ORIGIN)));
+            assertFalse(timeLine.isAlive(ORIGIN));
+            assertFalse(timeLine.isAlive(direction.shiftPoint(ORIGIN)));
             assertEquals(0, timeLine.getCurrentTimeInstant().getPopulation());
         }
     }
@@ -169,22 +166,22 @@ public class TimeTest {
                  * 1 1 1
                  * 0 0 0
                  */
-                assertEquals(ALIVE, timeLine.readState(ORIGIN));
-                assertEquals(ALIVE, timeLine.readState(RIGHT.shiftPoint(ORIGIN)));
-                assertEquals(ALIVE, timeLine.readState(LEFT.shiftPoint(ORIGIN)));
-                assertEquals(DEAD, timeLine.readState(UP.shiftPoint(ORIGIN)));
-                assertEquals(DEAD, timeLine.readState(DOWN.shiftPoint(ORIGIN)));
+                assertTrue(timeLine.isAlive(ORIGIN));
+                assertTrue(timeLine.isAlive(RIGHT.shiftPoint(ORIGIN)));
+                assertTrue(timeLine.isAlive(LEFT.shiftPoint(ORIGIN)));
+                assertFalse(timeLine.isAlive(UP.shiftPoint(ORIGIN)));
+                assertFalse(timeLine.isAlive(DOWN.shiftPoint(ORIGIN)));
             } else {
                 /*
                  * 0 1 0
                  * 0 1 0
                  * 0 1 0
                  */
-                assertEquals(ALIVE, timeLine.readState(ORIGIN));
-                assertEquals(DEAD, timeLine.readState(RIGHT.shiftPoint(ORIGIN)));
-                assertEquals(DEAD, timeLine.readState(LEFT.shiftPoint(ORIGIN)));
-                assertEquals(ALIVE, timeLine.readState(UP.shiftPoint(ORIGIN)));
-                assertEquals(ALIVE, timeLine.readState(DOWN.shiftPoint(ORIGIN)));
+                assertTrue(timeLine.isAlive(ORIGIN));
+                assertFalse(timeLine.isAlive(RIGHT.shiftPoint(ORIGIN)));
+                assertFalse(timeLine.isAlive(LEFT.shiftPoint(ORIGIN)));
+                assertTrue(timeLine.isAlive(UP.shiftPoint(ORIGIN)));
+                assertTrue(timeLine.isAlive(DOWN.shiftPoint(ORIGIN)));
             }
         }
     }
@@ -212,33 +209,33 @@ public class TimeTest {
 
         assertEquals(9, timeLine.getCurrentTimeInstant().getPopulation());
         // the square
-        assertEquals(ALIVE, timeLine.readState(new Point(1, 1)));
-        assertEquals(ALIVE, timeLine.readState(new Point(2, 1)));
-        assertEquals(ALIVE, timeLine.readState(new Point(1, 2)));
-        assertEquals(ALIVE, timeLine.readState(new Point(2, 2)));
+        assertTrue(timeLine.isAlive(new Point(1, 1)));
+        assertTrue(timeLine.isAlive(new Point(2, 1)));
+        assertTrue(timeLine.isAlive(new Point(1, 2)));
+        assertTrue(timeLine.isAlive(new Point(2, 2)));
 
         // the other thing
-        assertEquals(ALIVE, timeLine.readState(new Point(5, 1)));
-        assertEquals(ALIVE, timeLine.readState(new Point(5, 2)));
-        assertEquals(ALIVE, timeLine.readState(new Point(6, 1)));
-        assertEquals(ALIVE, timeLine.readState(new Point(6, 3)));
-        assertEquals(ALIVE, timeLine.readState(new Point(7, 2)));
+        assertTrue(timeLine.isAlive(new Point(5, 1)));
+        assertTrue(timeLine.isAlive(new Point(5, 2)));
+        assertTrue(timeLine.isAlive(new Point(6, 1)));
+        assertTrue(timeLine.isAlive(new Point(6, 3)));
+        assertTrue(timeLine.isAlive(new Point(7, 2)));
 
         for (int i = 0; i < MAX_TICKS; i++) {
             timeLine.forward();
             assertEquals(9, timeLine.getCurrentTimeInstant().getPopulation());
             // the square
-            assertEquals(ALIVE, timeLine.readState(new Point(1, 1)));
-            assertEquals(ALIVE, timeLine.readState(new Point(2, 1)));
-            assertEquals(ALIVE, timeLine.readState(new Point(1, 2)));
-            assertEquals(ALIVE, timeLine.readState(new Point(2, 2)));
+            assertTrue(timeLine.isAlive(new Point(1, 1)));
+            assertTrue(timeLine.isAlive(new Point(2, 1)));
+            assertTrue(timeLine.isAlive(new Point(1, 2)));
+            assertTrue(timeLine.isAlive(new Point(2, 2)));
 
             // the other thing
-            assertEquals(ALIVE, timeLine.readState(new Point(5, 1)));
-            assertEquals(ALIVE, timeLine.readState(new Point(5, 2)));
-            assertEquals(ALIVE, timeLine.readState(new Point(6, 1)));
-            assertEquals(ALIVE, timeLine.readState(new Point(6, 3)));
-            assertEquals(ALIVE, timeLine.readState(new Point(7, 2)));
+            assertTrue(timeLine.isAlive(new Point(5, 1)));
+            assertTrue(timeLine.isAlive(new Point(5, 2)));
+            assertTrue(timeLine.isAlive(new Point(6, 1)));
+            assertTrue(timeLine.isAlive(new Point(6, 3)));
+            assertTrue(timeLine.isAlive(new Point(7, 2)));
         }
     }
 

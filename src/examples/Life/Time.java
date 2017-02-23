@@ -6,9 +6,6 @@ import model.space.Point;
 
 import java.util.*;
 
-import static examples.Life.State.ALIVE;
-import static examples.Life.State.DEAD;
-
 /*
  * Represents time
  * Allows the timeInstant to run asynchronously from the render method
@@ -151,8 +148,8 @@ public class Time implements Runnable {
         return count;
     }
 
-    // EFFECTS: get the node state at the given position relative to the observer
-    public examples.Life.State readState(Point point) {
+    // EFFECTS: produce true if a node at the given observer-related position is alive
+    public boolean isAlive(Point point) {
         Node requestedNode;
 
         if (cachedNodes.containsKey(point)) {
@@ -165,11 +162,7 @@ public class Time implements Runnable {
             cachedNodes.put(point, requestedNode);
         }
 
-        if (getActualTimeInstant().getAliveCells().contains(requestedNode)) {
-            return ALIVE;
-        } else {
-            return DEAD;
-        }
+        return  getActualTimeInstant().getAliveCells().contains(requestedNode);
     }
 
     private Point getClosestPointTo(Map<Point, Node> cachedNodes, Point point) {

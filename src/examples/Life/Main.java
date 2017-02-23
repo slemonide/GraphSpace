@@ -2,8 +2,6 @@ package examples.Life;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -14,7 +12,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -28,7 +25,6 @@ import model.space.Point;
 
 import java.util.*;
 
-import static examples.Life.State.ALIVE;
 import static model.space.Direction.*;
 
 public class Main extends Application {
@@ -36,11 +32,13 @@ public class Main extends Application {
     private int sideSize = 8; // 16
     private double height = 100;
     private double width = 100;
-    private int fieldHeight = 500;
-    private int fieldWidth = 500;
-    private double cellDensity = 0.25;
+    private int fieldHeight = 600;
+    private int fieldWidth = 600;
+    private double cellDensity = 0.10;
     private Time timeLine;
     private Thread gameThread;
+
+    private Point screenCenter;
 
     // Render stuff
     private Map<Point, Rectangle> renderMap;
@@ -51,7 +49,7 @@ public class Main extends Application {
 
     @Override
     public void start(final Stage primaryStage) {
-        primaryStage.setTitle("TimeInstant Of Life");
+        primaryStage.setTitle("Game Of Life");
 
         mainScreen(primaryStage);
 
@@ -65,7 +63,7 @@ public class Main extends Application {
         grid.setVgap(10);
         grid.setPadding(new Insets(25, 25, 25, 25));
 
-        Text scenetitle = new Text("TimeInstant Of Life");
+        Text scenetitle = new Text("Game Of Life");
         scenetitle.setFont(Font.font("Tahoma", FontWeight.NORMAL, 20));
         grid.add(scenetitle, 0, 0);
 
@@ -132,98 +130,87 @@ public class Main extends Application {
         final Group squares = new Group();
         root.getChildren().add(squares);
 
-        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent ke) {
-                switch (ke.getCode()) {
-                    case R:
-                        // TODO: fix purge
-                        //timeInstant.purge();
-                        //timeInstant.populate(cellDensity);
-                        break;
-                    case UP:
-                        timeLine.move(UP);
-                        break;
-                    case DOWN:
-                        timeLine.move(DOWN);
-                        break;
-                    case LEFT:
-                        timeLine.move(LEFT);
-                        break;
-                    case RIGHT:
-                        timeLine.move(RIGHT);
-                        break;
-                    case SPACE:
-                        long startTime = System.nanoTime();
-                        timeLine.forward();
-                        long endTime = System.nanoTime();
+        scene.setOnKeyPressed(ke -> {
+            switch (ke.getCode()) {
+                case R:
+                    // TODO: fix purge
+                    //timeInstant.purge();
+                    //timeInstant.populate(cellDensity);
+                    break;
+                case UP:
+                    timeLine.move(UP);
+                    break;
+                case DOWN:
+                    timeLine.move(DOWN);
+                    break;
+                case LEFT:
+                    timeLine.move(LEFT);
+                    break;
+                case RIGHT:
+                    timeLine.move(RIGHT);
+                    break;
+                case SPACE:
+                    long startTime = System.nanoTime();
+                    timeLine.forward();
+                    long endTime = System.nanoTime();
 
-                        long duration = (endTime - startTime) / 1000000;  //divide by 1000000 to get milliseconds.
-                        System.out.println("forward() time: " + duration + " ms");
+                    long duration = (endTime - startTime) / 1000000;  //divide by 1000000 to get milliseconds.
+                    System.out.println("forward() time: " + duration + " ms");
 
-                        startTime = System.nanoTime();
-                        render(renderMap);
-                        endTime = System.nanoTime();
-                        duration = (endTime - startTime) / 1000000;  //divide by 1000000 to get milliseconds.
-                        System.out.println("render() time: " + duration + " ms");
-                        break;
-                    case F:
-                        primaryStage.setFullScreen(!primaryStage.isFullScreen());
-                        break;
-                    case F11:
-                        primaryStage.setFullScreen(!primaryStage.isFullScreen());
-                        break;
-                    case ESCAPE:
-                        mainScreen(primaryStage);
+                    startTime = System.nanoTime();
+                    render(renderMap);
+                    endTime = System.nanoTime();
+                    duration = (endTime - startTime) / 1000000;  //divide by 1000000 to get milliseconds.
+                    System.out.println("render() time: " + duration + " ms");
+                    break;
+                case F:
+                    primaryStage.setFullScreen(!primaryStage.isFullScreen());
+                    break;
+                case F11:
+                    primaryStage.setFullScreen(!primaryStage.isFullScreen());
+                    break;
+                case ESCAPE:
+                    mainScreen(primaryStage);
+                    gameThread.interrupt();
+                    break;
+                case Q:
+                    mainScreen(primaryStage);
+                    gameThread.interrupt();
+                    break;
+                case MINUS:
+                    sideSize = Math.max(sideSize - 1, 0);
+                    populateRenderCells(squares, primaryStage);
+                    render(renderMap);
+                    break;
+                case PLUS:
+                    sideSize++;
+                    populateRenderCells(squares, primaryStage);
+                    render(renderMap);
+                case P:
+                    if (!gameThread.isInterrupted()) {
                         gameThread.interrupt();
-                        break;
-                    case Q:
-                        mainScreen(primaryStage);
-                        gameThread.interrupt();
-                        break;
-                    case MINUS:
-                        sideSize = Math.max(sideSize - 1, 0);
-                        populateRenderCells(squares);
-                        render(renderMap);
-                        break;
-                    case PLUS:
-                        sideSize++;
-                        populateRenderCells(squares);
-                        render(renderMap);
-                    case P:
-                        if (!gameThread.isInterrupted()) {
-                            gameThread.interrupt();
-                            System.out.println("Interrupted thread!");
-                        } else {
-                        gameThread.start();
-                        System.out.println("Started thread!");
-                        }
-                }
-                render(renderMap);
+                    } else {
+                    gameThread.start();
+                    }
             }
+            render(renderMap);
         });
 
-        scene.heightProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                height = newValue.intValue();
-                populateRenderCells(squares);
-                render(renderMap);
-            }
+        scene.heightProperty().addListener((observable, oldValue, newValue) -> {
+            height = newValue.intValue();
+            populateRenderCells(squares, primaryStage);
+            render(renderMap);
         });
-        scene.widthProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                width = newValue.intValue();
-                populateRenderCells(squares);
-                render(renderMap);
-            }
+        scene.widthProperty().addListener((observable, oldValue, newValue) -> {
+            width = newValue.intValue();
+            populateRenderCells(squares, primaryStage);
+            render(renderMap);
         });
 
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);
 
-        populateRenderCells(squares);
+        populateRenderCells(squares, primaryStage);
         final Timer timer = new java.util.Timer();
         timer.schedule(new TimerTask() {
             public void run() {
@@ -242,19 +229,24 @@ public class Main extends Application {
         });
     }
 
-    private void populateRenderCells(Group squares) {
+    private void populateRenderCells(Group squares, Stage primaryScene) {
         int SPACING = 1;
 
+        screenCenter = new Point((int) primaryScene.getWidth() / (2 * (sideSize + SPACING)),
+                (int) primaryScene.getHeight() / (2 * (sideSize + SPACING)));
         renderMap = new HashMap<>();
 
         for (int y = 0; y < height / (sideSize + SPACING); y++) {
             for (int x = 0; x < width / (sideSize + SPACING); x++) {
-                Point position = new Point(x, y);
+                Point position = new Point(x, y).minus(screenCenter);
                 Rectangle square = new Rectangle(sideSize, sideSize, Color.BLACK);
                 square.setX(x * (sideSize + SPACING));
                 square.setY(y * (sideSize + SPACING));
-                renderMap.put(position, square);
-
+                if (!position.isOrigin()) {
+                    renderMap.put(position, square);
+                } else {
+                    square.setFill(Color.ORANGE);
+                }
                 squares.getChildren().add(square);
             }
         }
@@ -266,14 +258,12 @@ public class Main extends Application {
             Point point = pointRectangle.getKey();
             Rectangle square = pointRectangle.getValue();
 
-            State selectedNodeState = timeLine.readState(point);
-            String color;
-            if (selectedNodeState == ALIVE) {
-                color = "white";
+            if (timeLine.isAlive(point)) {
+                square.setFill(Color.WHITE);
             } else {
-                color = "black";
+                square.setFill(Color.BLACK);
             }
-            square.setFill(Color.web(color));
+
         }
     }
 }
