@@ -6,7 +6,7 @@ import java.util.Map;
 
 /*
  * Implements the concept of time
- * Time is a graph; time travel creates new branches;
+ * TimeLine is a graph; time travel creates new branches;
  * these may converge in the future
  */
 public class Time {

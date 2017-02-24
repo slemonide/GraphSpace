@@ -10,7 +10,7 @@ import java.util.HashSet;
 
 import static org.junit.Assert.assertEquals;
 
-public class TimeInstantTest {
+public class TimeLineInstantTest {
     private static final int MAX_TICKS = 100;
     private final double TOL = 0.1;
     private final int HEIGHT = 100;

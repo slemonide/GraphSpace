@@ -1,6 +1,6 @@
 package tests.examples.life;
 
-import examples.Life.Time;
+import examples.Life.TimeLine;
 import examples.Life.TimeInstant;
 import model.space.Direction;
 import model.space.Node;
@@ -13,18 +13,18 @@ import java.util.HashSet;
 import static model.space.Direction.*;
 import static org.junit.Assert.*;
 
-public class TimeTest {
+public class TimeLineTest {
     private int WIDTH = 100;
     private int HEIGHT = 100;
     private int MAX_TICKS = 500;
-    private Time timeLine;
+    private TimeLine timeLine;
 
     private final Point ORIGIN = new Point(0,0);
     private final Point DISTANT_POINT = new Point(HEIGHT / 2 + 32, WIDTH / 3 - 50);
 
     @Before
     public void runBefore() {
-        timeLine = new Time(new TimeInstant(new Node(WIDTH, HEIGHT), new HashSet<Node>()));
+        timeLine = new TimeLine(new TimeInstant(new Node(WIDTH, HEIGHT), new HashSet<Node>()));
     }
 
     @Test

@@ -23,6 +23,9 @@ public class TimeInstant {
         aliveCells = currentGeneration;
     }
 
+    public TimeInstant(Node field) {
+    }
+
     // EFFECTS: produce the total number of alive cells
     public int getPopulation() {
         return aliveCells.size();

@@ -2,12 +2,15 @@ package examples.Life;
 
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -34,8 +37,8 @@ public class Main extends Application {
     private double width = 100;
     private int fieldHeight = 600;
     private int fieldWidth = 600;
-    private double cellDensity = 0.10;
-    private Time timeLine;
+    private double cellDensity = 0.05;
+    private TimeLine timeLine;
     private Thread gameThread;
 
     private Point screenCenter;
@@ -121,7 +124,7 @@ public class Main extends Application {
     private void gameScreen(final Stage primaryStage) {
         TimeInstant initialTimeInstant = new TimeInstant(new Node(fieldWidth, fieldHeight), new HashSet<Node>());
         initialTimeInstant.populate(cellDensity);
-        timeLine = new Time(initialTimeInstant);
+        timeLine = new TimeLine(initialTimeInstant);
         gameThread = new Thread(timeLine);
         gameThread.start();
 
@@ -190,7 +193,15 @@ public class Main extends Application {
                     if (!gameThread.isInterrupted()) {
                         gameThread.interrupt();
                     } else {
-                    gameThread.start();
+                        gameThread.start();
+                    }
+                    break;
+                case C:
+                    ObservableList<javafx.scene.Node> children = ((Group) scene.getRoot()).getChildren();
+                    if (children.contains(populationsScreen(scene))) {
+                        children.remove(populationsScreen(scene));
+                    } else {
+                        children.add(populationsScreen(scene));
                     }
             }
             render(renderMap);
@@ -250,6 +261,29 @@ public class Main extends Application {
                 squares.getChildren().add(square);
             }
         }
+    }
+
+    private PieChart populationsScreen(Scene scene) {
+        ObservableList<PieChart.Data> pieChartData =
+                FXCollections.observableArrayList(
+                        new PieChart.Data("Alive",
+                                timeLine.getCurrentTimeInstant().getPopulation()),
+                        new PieChart.Data("Dead",
+                                fieldHeight * fieldWidth - timeLine.getCurrentTimeInstant().getPopulation()));
+        final PieChart chart = new PieChart(pieChartData);
+
+        final Timer timer = new java.util.Timer();
+        timer.schedule(new TimerTask() {
+            public void run() {
+                Platform.runLater(() -> {
+                    pieChartData.get(0).setPieValue(timeLine.getCurrentTimeInstant().getPopulation());
+                    pieChartData.get(1).setPieValue(fieldHeight * fieldWidth
+                            - timeLine.getCurrentTimeInstant().getPopulation());
+                });
+            }
+        }, 0, INTERVAL);
+
+        return chart;
     }
 
     // EFFECTS: render observed scene on the screen

@@ -10,15 +10,15 @@ import java.util.*;
  * Represents time
  * Allows the timeInstant to run asynchronously from the render method
  */
-public class Time implements Runnable {
+public class TimeLine implements Runnable {
     private Node field;
     private List<TimeInstant> timeInstants;
     private int currentGenerationNumber;
     // Caching
     private Map<Point, Node> cachedNodes;
 
-    // EFFECTS: create a Time instance with the given starting timeInstant
-    public Time(TimeInstant initialTimeInstant) {
+    // EFFECTS: create a TimeLine instance with the given starting timeInstant
+    public TimeLine(TimeInstant initialTimeInstant) {
         currentGenerationNumber = 0;
         timeInstants = new ArrayList<>();
         timeInstants.add(initialTimeInstant);
